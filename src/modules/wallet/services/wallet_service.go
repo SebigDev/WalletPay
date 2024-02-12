@@ -27,7 +27,7 @@ func (ws *walletService) AddWallet(userId string) error {
 	}
 
 	newWallet := entities.NewWallet(person.UserId)
-	person.Wallets = append(person.Wallets, daos.WalletDao(*newWallet))
+	person.Wallets = append(person.Wallets, *daos.ToDao(newWallet))
 	err = ws.UserRepository.UpdatePerson(*person)
 
 	if err != nil {

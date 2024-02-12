@@ -25,4 +25,5 @@ type PersonResponse struct {
 type WalletResponse struct {
 	Number  string  `json:"number"`
 	Balance float64 `json:"balance"`
+	Type    string  `json:"type"`
 }

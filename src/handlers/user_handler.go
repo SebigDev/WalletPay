@@ -59,7 +59,7 @@ func (s userHandler) GetPersonById(ctx *fiber.Ctx) error {
 	userId, err := utils.GetUserIdFromToken(ctx)
 	if err != nil {
 		log.Println(err)
-		return fiber.NewError(fiber.StatusBadRequest, "Error parsing request")
+		return fiber.NewError(fiber.StatusBadRequest, err.Error())
 	}
 
 	person, err := s.UserService.GetPersonById(userId)
