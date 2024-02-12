@@ -4,9 +4,8 @@ import (
 	"CrashCourse/GoApp/infrastructures/db"
 	"CrashCourse/GoApp/internal/middlewares"
 	"CrashCourse/GoApp/src/handlers"
-	"CrashCourse/GoApp/src/modules/user/repositories"
-	"CrashCourse/GoApp/src/modules/user/services"
-	walletService "CrashCourse/GoApp/src/modules/wallet/services"
+	"CrashCourse/GoApp/src/modules/repositories"
+	"CrashCourse/GoApp/src/modules/services"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -23,7 +22,7 @@ func MapRoute(app *fiber.App, store *db.MongoResponse) {
 
 	authHandler := handlers.NewAuthHandler(userService)
 
-	walletService := walletService.NewWalletService(userRepository)
+	walletService := services.NewWalletService(userRepository)
 	walletHander := handlers.NewWalletHandler(walletService)
 
 	//person Routes
@@ -37,4 +36,6 @@ func MapRoute(app *fiber.App, store *db.MongoResponse) {
 	v1.Get("/user", authMiddleware.UserAuthMiddlewareHandler, userHandler.GetPersonById)
 	v1.Get("/users", authMiddleware.UserAuthMiddlewareHandler, userHandler.GetAllUsers)
 	v1.Post("/wallet/add", authMiddleware.UserAuthMiddlewareHandler, walletHander.AddWallet)
+	v1.Post("/wallet/deposit", authMiddleware.UserAuthMiddlewareHandler, walletHander.Deposit)
+	v1.Post("/wallet/withdraw", authMiddleware.UserAuthMiddlewareHandler, walletHander.Withdraw)
 }

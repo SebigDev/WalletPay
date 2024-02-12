@@ -1,8 +1,8 @@
 package handlers
 
 import (
-	"CrashCourse/GoApp/src/modules/user/dto"
-	"CrashCourse/GoApp/src/modules/user/services"
+	"CrashCourse/GoApp/src/modules/dto"
+	"CrashCourse/GoApp/src/modules/services"
 
 	"time"
 
@@ -27,13 +27,13 @@ func (s authHandler) Authenticate(ctx *fiber.Ctx) error {
 	authRequest := new(dto.LoginRequest)
 
 	if err := ctx.BodyParser(authRequest); err != nil {
-		return fiber.NewError(fiber.StatusUnauthorized, "Error parsing request")
+		return ctx.Status(401).JSON("Error parsing request")
 	}
 
 	tokenResponse, err := s.UserService.LoginPerson(*authRequest)
 
 	if err != nil {
-		return fiber.NewError(fiber.StatusUnauthorized, err.Error())
+		return ctx.Status(401).JSON(err.Error())
 	}
 
 	cookie := fiber.Cookie{
