@@ -48,7 +48,7 @@ type Wallet struct {
 func NewWallet(userId string) (*Wallet, error) {
 	owner, err := uuid.Parse(userId)
 	if err != nil {
-		return nil, WalletError{ErrorMsg: "Wallet cannot e created"}
+		return nil, WalletError{ErrorMsg: "Wallet cannot be created"}
 	}
 	return &Wallet{
 		Number: generateWalletNumber(),
