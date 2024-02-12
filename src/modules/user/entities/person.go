@@ -4,6 +4,8 @@ import (
 	"CrashCourse/GoApp/src/modules/user/daos"
 	"CrashCourse/GoApp/src/modules/user/dto"
 	"CrashCourse/GoApp/src/modules/user/vo"
+	w "CrashCourse/GoApp/src/modules/wallet/daos"
+	"CrashCourse/GoApp/src/modules/wallet/entities"
 	"time"
 
 	"github.com/google/uuid"
@@ -15,6 +17,7 @@ type Person struct {
 	streetName  string
 	postalCode  string
 	city        string
+	wallets     []entities.Wallet
 }
 
 func NewPerson(p dto.CreatePerson) (daos.PersonDao, error) {
@@ -40,12 +43,14 @@ func NewPerson(p dto.CreatePerson) (daos.PersonDao, error) {
 		IsActive:     true,
 		IsVerified:   true,
 	}
+
 	person := Person{
 		user:        user,
 		houseNumber: p.HouseNumber,
 		streetName:  p.StreetName,
 		postalCode:  p.PostalCode,
 		city:        p.City,
+		wallets:     []entities.Wallet{},
 	}
 	return person.mapToDao(), nil
 }
@@ -64,5 +69,6 @@ func (p *Person) mapToDao() daos.PersonDao {
 		IsActive:     p.user.IsActive,
 		IsVerified:   p.user.IsVerified,
 		CreatedAt:    p.user.CreateAt,
+		Wallets:      *w.MapToDaoFrom(p.wallets),
 	}
 }
