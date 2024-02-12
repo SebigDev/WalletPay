@@ -30,8 +30,8 @@ func GetToken(c *fiber.Ctx) (*jwt.Token, error) {
 			return SecretKey, nil
 		})
 	if err != nil {
-		log.Println("Token parsing error")
-		return nil, err
+		log.Println(err)
+		return nil, fmt.Errorf("oops!!! something went wrong")
 	}
 
 	return jwtToken, nil
@@ -42,13 +42,12 @@ func GetUserIdFromToken(ctx *fiber.Ctx) (string, error) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	userId := ""
-	if claims, ok := token.Claims.(jwt.MapClaims); ok {
-		userId = claims["sub"].(string)
 
-		if !ok {
-			log.Fatal("Error getting claim")
-		}
+	userId, err := token.Claims.(jwt.MapClaims).GetSubject()
+
+	if err != nil {
+		log.Fatal(err)
 	}
+
 	return userId, nil
 }

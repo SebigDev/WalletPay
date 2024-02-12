@@ -18,6 +18,7 @@ type IUserRepository interface {
 	GetUserByEmailAddress(emailAddress string) (*daos.PersonDao, error)
 	GetUserById(id string) (*daos.PersonDao, error)
 	GetUsers() (*[]daos.PersonDao, error)
+	UpdatePerson(person daos.PersonDao) error
 }
 
 type userRepository struct {
@@ -107,4 +108,14 @@ func (u *userRepository) GetUsers() (*[]daos.PersonDao, error) {
 	}
 
 	return &daos, nil
+}
+
+func (u *userRepository) UpdatePerson(person daos.PersonDao) error {
+	filter := bson.M{"userId": person.UserId}
+
+	_, err := u.Collection.ReplaceOne(u.Ctx, filter, person)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return nil
 }
