@@ -30,7 +30,7 @@ func (s userHandler) CreatePerson(ctx *fiber.Ctx) error {
 
 	if err := ctx.BodyParser(createPersonReqBody); err != nil {
 		log.Println(err)
-		return ctx.Status(400).JSON("Error parsing request")
+		return ctx.Status(500).JSON("Error parsing request")
 	}
 
 	err := s.UserService.CreateNewPerson(*createPersonReqBody)

@@ -27,7 +27,7 @@ func (s authHandler) Authenticate(ctx *fiber.Ctx) error {
 	authRequest := new(dto.LoginRequest)
 
 	if err := ctx.BodyParser(authRequest); err != nil {
-		return ctx.Status(401).JSON("Error parsing request")
+		return ctx.Status(500).JSON("Error parsing request")
 	}
 
 	tokenResponse, err := s.UserService.LoginPerson(*authRequest)

@@ -34,7 +34,7 @@ func (ws *walletService) AddWallet(userId string) error {
 		return err
 	}
 	for _, wa := range *person.GetWallets() {
-		if walletAlreayExist(*newWallet, wa) {
+		if walletAlreadyExist(*newWallet, wa) {
 			return fmt.Errorf("wallet of type %s and currency %s already created", wa.Type, wa.Amount.Currency)
 		}
 	}
@@ -87,6 +87,6 @@ func (ws *walletService) Withdraw(userId string, withdrawReq dto.WithdrawRequest
 	return nil
 }
 
-func walletAlreayExist(rWallet entities.Wallet, nWallet entities.Wallet) bool {
+func walletAlreadyExist(rWallet entities.Wallet, nWallet entities.Wallet) bool {
 	return rWallet.Type == nWallet.Type && rWallet.Amount.Currency == nWallet.Amount.Currency
 }

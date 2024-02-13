@@ -2,7 +2,10 @@ module CrashCourse/GoApp
 
 go 1.22.0
 
-require github.com/gofiber/fiber/v2 v2.52.0
+require (
+	github.com/gofiber/fiber/v2 v2.52.0
+	github.com/joho/godotenv v1.5.1
+)
 
 require github.com/google/go-cmp v0.6.0 // indirect
 
