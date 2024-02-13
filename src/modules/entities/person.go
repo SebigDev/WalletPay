@@ -112,23 +112,11 @@ func MapToResponse(d *Person) responses.PersonResponse {
 	}
 }
 
-func (p *Person) VerifyPassword(password string) error {
-	return vo.VerifyPassword(password, p.user.Password.Value)
-}
-
-func (p *Person) GetUserID() string {
-	return p.user.Aggregate.UserId.String()
-}
-
-func (p *Person) GetWallets() *[]Wallet {
-	return &p.wallets
-}
-
-func (p *Person) SetWallet(wallet Wallet) {
-	p.wallets = append(p.wallets, wallet)
-}
-
 func (p *Person) Deposit(amount float64, walletNo string) error {
+	if !p.HasWallets() {
+		return fmt.Errorf("oops!!! user has no wallets")
+	}
+
 	for i, wallet := range p.wallets {
 		if wallet.Number == walletNo {
 			err := p.wallets[i].Deposit(amount)
@@ -143,6 +131,10 @@ func (p *Person) Deposit(amount float64, walletNo string) error {
 }
 
 func (p *Person) Withdraw(amount float64, walletNo string) error {
+	if !p.HasWallets() {
+		return fmt.Errorf("oops!!! user has no wallets")
+	}
+
 	for i, wallet := range p.wallets {
 		if wallet.Number == walletNo {
 			err := p.wallets[i].Withdraw(amount)
@@ -154,4 +146,28 @@ func (p *Person) Withdraw(amount float64, walletNo string) error {
 		}
 	}
 	return nil
+}
+
+func (p *Person) VerifyPassword(password string) error {
+	return vo.VerifyPassword(password, p.user.Password.Value)
+}
+
+func (p *Person) GetUserID() string {
+	return p.user.Aggregate.UserId.String()
+}
+
+func (p *Person) HasWallets() bool {
+	return p.wallets != nil || len(p.wallets) > 0
+}
+
+func (p *Person) SetWallet(wallet Wallet) {
+	p.wallets = append(p.wallets, wallet)
+}
+
+func (p *Person) IsNotNil() bool {
+	return p.user != nil
+}
+
+func (p *Person) GetWallets() *[]Wallet {
+	return &p.wallets
 }

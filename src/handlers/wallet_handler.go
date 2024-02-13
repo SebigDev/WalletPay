@@ -50,7 +50,7 @@ func (w walletHandler) Deposit(ctx *fiber.Ctx) error {
 
 	depositRequest := new(dto.DepositRequest)
 	if err := ctx.BodyParser(depositRequest); err != nil {
-		return ctx.Status(400).JSON("Error parsing request")
+		return ctx.Status(500).JSON("Error parsing request")
 	}
 
 	err = w.WalletService.Deposit(userId, *depositRequest)
@@ -71,7 +71,7 @@ func (w walletHandler) Withdraw(ctx *fiber.Ctx) error {
 
 	withdrawRequest := new(dto.WithdrawRequest)
 	if err := ctx.BodyParser(withdrawRequest); err != nil {
-		return ctx.Status(400).JSON("Error parsing request")
+		return ctx.Status(500).JSON("Error parsing request")
 	}
 
 	err = w.WalletService.Withdraw(userId, *withdrawRequest)

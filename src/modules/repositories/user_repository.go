@@ -40,7 +40,7 @@ func (u *userRepository) AddUser(person daos.PersonDao) error {
 		return err
 	}
 
-	if p != nil {
+	if p.IsNotNil() {
 		return errors.New("user with email address already exists")
 	}
 
