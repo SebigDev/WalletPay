@@ -9,3 +9,7 @@ type WithdrawRequest struct {
 	Amount       float64 `json:"amount"`
 	WalletNumber string  `json:"walletNo"`
 }
+
+type CreateWalletRequest struct {
+	Currency string `json:"currency"`
+}

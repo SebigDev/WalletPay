@@ -37,7 +37,7 @@ func NewPerson(p dto.CreatePerson) (daos.PersonDao, error) {
 		Aggregate:    agg,
 		FirstName:    p.FirstName,
 		LastName:     p.LastName,
-		EmailAddress: emailAddress,
+		EmailAddress: *emailAddress,
 		Password:     password,
 		CreateAt:     time.Now().UTC(),
 		IsActive:     true,
@@ -117,17 +117,18 @@ func (p *Person) Deposit(amount float64, walletNo string) error {
 		return fmt.Errorf("oops!!! user has no wallets")
 	}
 
-	for i, wallet := range p.wallets {
+	for _, wallet := range p.wallets {
 		if wallet.Number == walletNo {
-			err := p.wallets[i].Deposit(amount)
+			err := wallet.Deposit(amount)
 			if err != nil {
 				return err
 			}
-		} else {
-			return fmt.Errorf("you have provided an invalid wallet address: %s", walletNo)
+			return nil
 		}
 	}
-	return nil
+
+	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNo)
+
 }
 
 func (p *Person) Withdraw(amount float64, walletNo string) error {
@@ -135,17 +136,16 @@ func (p *Person) Withdraw(amount float64, walletNo string) error {
 		return fmt.Errorf("oops!!! user has no wallets")
 	}
 
-	for i, wallet := range p.wallets {
+	for _, wallet := range p.wallets {
 		if wallet.Number == walletNo {
-			err := p.wallets[i].Withdraw(amount)
+			err := wallet.Withdraw(amount)
 			if err != nil {
 				return err
 			}
-		} else {
-			return fmt.Errorf("you have provided an invalid wallet address: %s", walletNo)
+			return nil
 		}
 	}
-	return nil
+	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNo)
 }
 
 func (p *Person) VerifyPassword(password string) error {

@@ -18,20 +18,20 @@ func (e EmailAddressError) Error() string {
 	return fmt.Sprintln(e.ErrorMsg)
 }
 
-func CreateEmailAddress(emailAddress string) (EmailAddress, error) {
+func CreateEmailAddress(emailAddress string) (*EmailAddress, error) {
 	if len(strings.TrimSpace(emailAddress)) == 0 {
-		return EmailAddress{}, EmailAddressError{ErrorMsg: "Email address has to be provided"}
+		return &EmailAddress{}, EmailAddressError{ErrorMsg: "Email address has to be provided"}
 	}
 	isValid := validateEmail(emailAddress)
 	if !isValid {
 
-		return EmailAddress{}, EmailAddressError{ErrorMsg: "You have provided an invalid email address"}
+		return &EmailAddress{}, EmailAddressError{ErrorMsg: "You have provided an invalid email address"}
 	}
 	return newEmailAddress(emailAddress), nil
 }
 
-func newEmailAddress(emailAddress string) EmailAddress {
-	return EmailAddress{
+func newEmailAddress(emailAddress string) *EmailAddress {
+	return &EmailAddress{
 		Value: emailAddress,
 	}
 }
