@@ -8,7 +8,7 @@ import (
 )
 
 type IWalletService interface {
-	AddWallet(userId string) error
+	AddWallet(userId, currency string) error
 	Deposit(userId string, depositReq dto.DepositRequest) error
 	Withdraw(userId string, withdrawReq dto.WithdrawRequest) error
 }
@@ -23,13 +23,13 @@ func NewWalletService(userRepo repositories.IUserRepository) IWalletService {
 	}
 }
 
-func (ws *walletService) AddWallet(userId string) error {
+func (ws *walletService) AddWallet(userId, currency string) error {
 	person, err := ws.UserRepository.GetUserById(userId)
 	if err != nil {
 		return err
 	}
 
-	newWallet, err := entities.NewWallet(person.GetUserID())
+	newWallet, err := entities.NewWallet(person.GetUserID(), currency)
 	if err != nil {
 		return err
 	}

@@ -1,0 +1,240 @@
+basePath: /
+definitions:
+  dto.CreatePerson:
+    properties:
+      city:
+        type: string
+      emailAddress:
+        type: string
+      firstName:
+        type: string
+      houseNumber:
+        type: string
+      lastName:
+        type: string
+      password:
+        type: string
+      postalCode:
+        type: string
+      streetName:
+        type: string
+    type: object
+  dto.CreateWalletRequest:
+    properties:
+      currency:
+        type: string
+    type: object
+  dto.DepositRequest:
+    properties:
+      amount:
+        type: number
+      walletNo:
+        type: string
+    type: object
+  dto.LoginRequest:
+    properties:
+      emailAddress:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.WithdrawRequest:
+    properties:
+      amount:
+        type: number
+      walletNo:
+        type: string
+    type: object
+  responses.Amount:
+    properties:
+      currency:
+        type: string
+      value:
+        type: number
+    type: object
+  responses.PersonResponse:
+    properties:
+      city:
+        type: string
+      createdAt:
+        type: string
+      emailAddress:
+        type: string
+      firstName:
+        type: string
+      houseNumber:
+        type: string
+      isActive:
+        type: boolean
+      isVerified:
+        type: boolean
+      lastName:
+        type: string
+      postalCode:
+        type: string
+      streetName:
+        type: string
+      userId:
+        type: string
+      wallets:
+        items:
+          $ref: '#/definitions/responses.WalletResponse'
+        type: array
+    type: object
+  responses.WalletResponse:
+    properties:
+      balance:
+        $ref: '#/definitions/responses.Amount'
+      number:
+        type: string
+      type:
+        type: string
+    type: object
+host: localhost:3000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a GoApp project.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: GoApp Wallet API
+  version: "2.0"
+paths:
+  /api/v1/auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticates a person.
+      parameters:
+      - description: Authenticate
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: autenticate a person
+      tags:
+      - Authentication
+  /api/v1/user:
+    get:
+      consumes:
+      - application/json
+      description: Get person by given ID.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/responses.PersonResponse'
+      tags:
+      - Person
+  /api/v1/users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.PersonResponse'
+            type: array
+      summary: get all users
+      tags:
+      - Person
+  /api/v1/users/onboard:
+    post:
+      consumes:
+      - application/json
+      description: Create a new person.
+      parameters:
+      - description: Create person
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePerson'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: create a new person
+      tags:
+      - Person
+  /api/v1/wallet/add:
+    post:
+      consumes:
+      - application/json
+      description: Create a new wallet.
+      parameters:
+      - description: Create wallet
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateWalletRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: create a new wallet
+      tags:
+      - Wallet
+  /api/v1/wallet/deposit:
+    post:
+      consumes:
+      - application/json
+      description: Deposit in a wallet.
+      parameters:
+      - description: Deposit into a wallet
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.DepositRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: deposit in a wallet
+      tags:
+      - Wallet
+  /api/v1/wallet/withdraw:
+    post:
+      consumes:
+      - application/json
+      description: Withdraw from a wallet.
+      parameters:
+      - description: Withdraws from a wallet
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.WithdrawRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: Withdraw from a wallet
+      tags:
+      - Wallet
+schemes:
+- http
+swagger: "2.0"

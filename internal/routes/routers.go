@@ -7,6 +7,7 @@ import (
 	"CrashCourse/GoApp/src/modules/repositories"
 	"CrashCourse/GoApp/src/modules/services"
 
+	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 )
 
@@ -32,6 +33,8 @@ func MapRoute(app *fiber.App, store *db.MongoResponse) {
 	v1.Post("/users/onboard", userHandler.CreatePerson)
 	v1.Post("/auth/login", authHandler.Authenticate)
 
+	//swagger routes
+	app.Get("/swagger/*", swagger.HandlerDefault)
 	//Authenticated routes
 	v1.Get("/user", authMiddleware.UserAuthMiddlewareHandler, userHandler.GetPersonById)
 	v1.Get("/users", authMiddleware.UserAuthMiddlewareHandler, userHandler.GetAllUsers)

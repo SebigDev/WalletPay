@@ -45,7 +45,7 @@ type Wallet struct {
 	Type   WalletType
 }
 
-func NewWallet(userId string) (*Wallet, error) {
+func NewWallet(userId, currency string) (*Wallet, error) {
 	owner, err := uuid.Parse(userId)
 	if err != nil {
 		return nil, WalletError{ErrorMsg: "Wallet cannot be created"}
@@ -56,7 +56,7 @@ func NewWallet(userId string) (*Wallet, error) {
 		Type:   Private,
 		Amount: Amount{
 			Value:    0,
-			Currency: string(EURO),
+			Currency: currency,
 		},
 	}, nil
 }
