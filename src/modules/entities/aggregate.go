@@ -1,12 +1,10 @@
 package entities
 
-import "github.com/google/uuid"
-
 type UserAggregate struct {
-	UserId uuid.UUID
+	UserId string
 }
 
-func New(id uuid.UUID) *UserAggregate {
+func New(id string) *UserAggregate {
 	return &UserAggregate{
 		UserId: id,
 	}

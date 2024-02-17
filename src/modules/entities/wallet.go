@@ -3,10 +3,9 @@ package entities
 import (
 	"CrashCourse/GoApp/src/modules/daos"
 	r "CrashCourse/GoApp/src/modules/responses"
+	"CrashCourse/GoApp/src/modules/vo"
 	"fmt"
 	"math/rand"
-
-	"github.com/google/uuid"
 )
 
 type WalletError struct {
@@ -19,9 +18,9 @@ func (e WalletError) Error() string {
 
 type WalletType string
 
-type Amount struct {
-	Value    float64
-	Currency string
+type Money struct {
+	Amount   vo.Amount
+	Currency vo.Currency
 }
 
 const (
@@ -29,52 +28,38 @@ const (
 	Business WalletType = "Business"
 )
 
-type Currency string
-
-const (
-	EURO Currency = "EUR"
-	USD  Currency = "USD"
-	YEN  Currency = "YEN"
-	NGN  Currency = "NGN"
-)
-
 type Wallet struct {
-	Number string
-	Amount Amount
-	Owner  uuid.UUID
-	Type   WalletType
+	Number  string
+	Money   Money
+	OwnerID vo.Owner
+	Type    WalletType
 }
 
-func NewWallet(userId, currency string) (*Wallet, error) {
-	owner, err := uuid.Parse(userId)
-	if err != nil {
-		return nil, WalletError{ErrorMsg: "Wallet cannot be created"}
+func NewMoney(amount vo.Amount, currency vo.Currency) *Money {
+	return &Money{
+		Amount:   amount,
+		Currency: currency,
 	}
+}
+
+func NewWallet(owner vo.Owner, money Money) *Wallet {
 	return &Wallet{
-		Number: generateWalletNumber(),
-		Owner:  owner,
-		Type:   Private,
-		Amount: Amount{
-			Value:    0,
-			Currency: currency,
+		Number:  generateWalletNumber(),
+		OwnerID: owner,
+		Type:    Private,
+		Money: Money{
+			Amount:   money.Amount,
+			Currency: money.Currency,
 		},
-	}, nil
+	}
 }
 
-func (w *Wallet) Deposit(amount float64) error {
-	if amount <= 0 {
-		return WalletError{ErrorMsg: "Amount has to be greater than 0"}
-	}
-	w.Amount.Value += amount
-	return nil
+func (w *Wallet) Deposit(money Money) {
+	w.Money.Amount += money.Amount
 }
 
-func (w *Wallet) Withdraw(amount float64) error {
-	if amount > w.Amount.Value {
-		return WalletError{ErrorMsg: "You have insufficient balance"}
-	}
-	w.Amount.Value -= amount
-	return nil
+func (w *Wallet) Withdraw(money Money) {
+	w.Money.Amount -= money.Amount
 }
 
 func WalletsToDao(wallets []Wallet) *[]daos.WalletDao {
@@ -83,10 +68,10 @@ func WalletsToDao(wallets []Wallet) *[]daos.WalletDao {
 		walletDao = append(walletDao, daos.WalletDao{
 			Number: w.Number,
 			Amount: daos.AmountDao{
-				Value:    w.Amount.Value,
-				Currency: w.Amount.Currency,
+				Value:    float64(w.Money.Amount),
+				Currency: w.Money.Currency.String(),
 			},
-			Owner: w.Owner,
+			Owner: w.OwnerID.String(),
 			Type:  string(w.Type),
 		})
 	}
@@ -99,8 +84,8 @@ func PersonToResponse(wallets []Wallet) *[]r.WalletResponse {
 		res = append(res, r.WalletResponse{
 			Number: wallet.Number,
 			Amount: r.Amount{
-				Value:    float64(wallet.Amount.Value),
-				Currency: wallet.Amount.Currency,
+				Value:    float64(wallet.Money.Amount),
+				Currency: wallet.Money.Currency.String(),
 			},
 			Type: string(wallet.Type),
 		})
@@ -112,11 +97,11 @@ func FromDao(wallets []daos.WalletDao) *[]Wallet {
 	var res []Wallet
 	for _, wallet := range wallets {
 		res = append(res, Wallet{
-			Number: wallet.Number,
-			Owner:  wallet.Owner,
-			Amount: Amount{
-				Value:    wallet.Amount.Value,
-				Currency: wallet.Amount.Currency,
+			Number:  wallet.Number,
+			OwnerID: vo.Owner(wallet.Owner),
+			Money: Money{
+				Amount:   vo.Amount(wallet.Amount.Value),
+				Currency: vo.Currency(wallet.Amount.Currency),
 			},
 			Type: WalletType(wallet.Type),
 		})
@@ -128,10 +113,10 @@ func WalletToDao(w *Wallet) *daos.WalletDao {
 	return &daos.WalletDao{
 		Number: w.Number,
 		Amount: daos.AmountDao{
-			Value:    w.Amount.Value,
-			Currency: w.Amount.Currency,
+			Value:    float64(w.Money.Amount),
+			Currency: w.Money.Currency.String(),
 		},
-		Owner: w.Owner,
+		Owner: w.OwnerID.String(),
 		Type:  string(w.Type),
 	}
 }

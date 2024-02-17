@@ -144,7 +144,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Wallet"
+                    "Transaction"
                 ],
                 "summary": "create a new wallet",
                 "parameters": [
@@ -175,7 +175,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Wallet"
+                    "Transaction"
                 ],
                 "summary": "deposit in a wallet",
                 "parameters": [
@@ -196,6 +196,63 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/v1/wallet/transaction": {
+            "post": {
+                "description": "Create a new transaction.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "create a new transaction",
+                "parameters": [
+                    {
+                        "description": "Create transaction",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateTransaction"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/wallet/transactions": {
+            "get": {
+                "description": "Get all transactions.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "get all transactions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/responses.TransactionFullResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/wallet/withdraw": {
             "post": {
                 "description": "Withdraw from a wallet.",
@@ -206,7 +263,7 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Wallet"
+                    "Transaction"
                 ],
                 "summary": "Withdraw from a wallet",
                 "parameters": [
@@ -258,6 +315,32 @@ const docTemplate = `{
                 }
             }
         },
+        "dto.CreateTransaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "creditorCurrency": {
+                    "type": "string"
+                },
+                "creditorName": {
+                    "type": "string"
+                },
+                "creditorWalletAddress": {
+                    "type": "string"
+                },
+                "debitorCurrency": {
+                    "type": "string"
+                },
+                "debitorWalletAddress": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CreateWalletRequest": {
             "type": "object",
             "properties": {
@@ -271,6 +354,9 @@ const docTemplate = `{
             "properties": {
                 "amount": {
                     "type": "number"
+                },
+                "currency": {
+                    "type": "string"
                 },
                 "walletNo": {
                     "type": "string"
@@ -293,6 +379,9 @@ const docTemplate = `{
             "properties": {
                 "amount": {
                     "type": "number"
+                },
+                "currency": {
+                    "type": "string"
                 },
                 "walletNo": {
                     "type": "string"
@@ -354,6 +443,47 @@ const docTemplate = `{
                 }
             }
         },
+        "responses.TransactionFullResponse": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "beneficiaryCurrency": {
+                    "type": "string"
+                },
+                "beneficiaryName": {
+                    "type": "string"
+                },
+                "benficiaryAccount": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "debitorName": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "originatorAccount": {
+                    "type": "string"
+                },
+                "originatorCurrency": {
+                    "type": "string"
+                },
+                "transactionReference": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
+                }
+            }
+        },
         "responses.WalletResponse": {
             "type": "object",
             "properties": {
@@ -374,7 +504,7 @@ const docTemplate = `{
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
 	Version:          "2.0",
-	Host:             "localhost:3000",
+	Host:             "localhost:3001",
 	BasePath:         "/",
 	Schemes:          []string{"http"},
 	Title:            "GoApp Wallet API",

@@ -7,7 +7,6 @@ import (
 	"errors"
 	"log"
 
-	"github.com/google/uuid"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 )
@@ -76,14 +75,8 @@ func (u *userRepository) GetUserByEmailAddress(emailAddress string) (*entities.P
 func (u *userRepository) GetUserById(id string) (*entities.Person, error) {
 	var dao daos.PersonDao
 
-	uuid, err := uuid.Parse(id)
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	filter := bson.M{"userId": uuid}
-
-	err = u.Collection.FindOne(u.Ctx, filter).Decode(&dao)
+	filter := bson.M{"userId": id}
+	err := u.Collection.FindOne(u.Ctx, filter).Decode(&dao)
 
 	if err != nil {
 		if err.Error() == MongoNoDocumentError {

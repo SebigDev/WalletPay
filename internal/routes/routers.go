@@ -16,15 +16,23 @@ var authMiddleware *middlewares.AuthMiddleware
 func MapRoute(app *fiber.App, store *db.MongoResponse) {
 
 	//USERS
+	//COLLECTION
 	userCollection := store.ClientR.Database("goapp").Collection("users")
+	trxCollection := store.ClientR.Database("goapp").Collection("transactions")
+
+	//REPOSITORIES
 	userRepository := repositories.NewUserRepository(userCollection, store.CtxR)
+	trxRepository := repositories.NewTransactionRepository(trxCollection, store.CtxR)
+
+	//SERVICES
 	userService := services.NewUserService(userRepository)
-	userHandler := handlers.NewUserHandler(userService)
-
-	authHandler := handlers.NewAuthHandler(userService)
-
 	walletService := services.NewWalletService(userRepository)
-	walletHander := handlers.NewWalletHandler(walletService)
+	trxService := services.NewTransactionService(trxRepository, userRepository)
+
+	//HANDLERS
+	userHandler := handlers.NewUserHandler(userService)
+	authHandler := handlers.NewAuthHandler(userService)
+	walletHander := handlers.NewWalletHandler(walletService, trxService)
 
 	//person Routes
 
@@ -41,4 +49,6 @@ func MapRoute(app *fiber.App, store *db.MongoResponse) {
 	v1.Post("/wallet/add", authMiddleware.UserAuthMiddlewareHandler, walletHander.AddWallet)
 	v1.Post("/wallet/deposit", authMiddleware.UserAuthMiddlewareHandler, walletHander.Deposit)
 	v1.Post("/wallet/withdraw", authMiddleware.UserAuthMiddlewareHandler, walletHander.Withdraw)
+	v1.Post("/wallet/transaction", authMiddleware.UserAuthMiddlewareHandler, walletHander.CreateTransaction)
+	v1.Get("/wallet/transactions", authMiddleware.UserAuthMiddlewareHandler, walletHander.GetTransactions)
 }

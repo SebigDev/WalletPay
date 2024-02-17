@@ -2,12 +2,10 @@ package daos
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 type PersonDao struct {
-	UserId       uuid.UUID       `bson:"userId"`
+	UserId       string          `bson:"userId"`
 	FirstName    string          `bson:"firstName"`
 	LastName     string          `bson:"lastName"`
 	EmailAddress EmailAddressDao `bson:"emailAddress"`

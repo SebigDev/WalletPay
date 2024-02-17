@@ -22,7 +22,7 @@ type Person struct {
 
 func NewPerson(p dto.CreatePerson) (daos.PersonDao, error) {
 	agg := &UserAggregate{
-		UserId: uuid.New(),
+		UserId: uuid.New().String(),
 	}
 	emailAddress, err := vo.CreateEmailAddress(p.EmailAddress)
 	if err != nil {
@@ -50,7 +50,7 @@ func NewPerson(p dto.CreatePerson) (daos.PersonDao, error) {
 		streetName:  p.StreetName,
 		postalCode:  p.PostalCode,
 		city:        p.City,
-		wallets:     []Wallet{},
+		wallets:     make([]Wallet, 0),
 	}
 	return person.MapToDao(), nil
 }
@@ -97,7 +97,7 @@ func MapFromDao(p *daos.PersonDao) Person {
 
 func MapToResponse(d *Person) responses.PersonResponse {
 	return responses.PersonResponse{
-		UserId:       d.user.Aggregate.UserId.String(),
+		UserId:       d.user.Aggregate.UserId,
 		FirstName:    d.user.FirstName,
 		LastName:     d.user.LastName,
 		EmailAddress: d.user.EmailAddress.Value,
@@ -112,40 +112,35 @@ func MapToResponse(d *Person) responses.PersonResponse {
 	}
 }
 
-func (p *Person) Deposit(amount float64, walletNo string) error {
+func (p *Person) Deposit(money Money, walletNumber vo.WalletNumber) error {
 	if !p.HasWallets() {
 		return fmt.Errorf("oops!!! user has no wallets")
 	}
 
-	for _, wallet := range p.wallets {
-		if wallet.Number == walletNo {
-			err := wallet.Deposit(amount)
-			if err != nil {
-				return err
-			}
+	for i := range p.wallets {
+		if p.wallets[i].Number == walletNumber.String() && p.wallets[i].Money.Currency == money.Currency {
+			p.wallets[i].Deposit(money)
 			return nil
 		}
 	}
-
-	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNo)
-
+	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNumber)
 }
 
-func (p *Person) Withdraw(amount float64, walletNo string) error {
+func (p *Person) Withdraw(money Money, walletNumber vo.WalletNumber) error {
 	if !p.HasWallets() {
 		return fmt.Errorf("oops!!! user has no wallets")
 	}
 
-	for _, wallet := range p.wallets {
-		if wallet.Number == walletNo {
-			err := wallet.Withdraw(amount)
-			if err != nil {
-				return err
+	for i := range p.wallets {
+		if p.wallets[i].Number == walletNumber.String() && p.wallets[i].Money.Currency == money.Currency {
+			if p.wallets[i].Money.Amount < money.Amount {
+				return fmt.Errorf("insufficient fund")
 			}
+			p.wallets[i].Withdraw(money)
 			return nil
 		}
 	}
-	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNo)
+	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNumber)
 }
 
 func (p *Person) VerifyPassword(password string) error {
@@ -153,7 +148,7 @@ func (p *Person) VerifyPassword(password string) error {
 }
 
 func (p *Person) GetUserID() string {
-	return p.user.Aggregate.UserId.String()
+	return p.user.Aggregate.UserId
 }
 
 func (p *Person) HasWallets() bool {
