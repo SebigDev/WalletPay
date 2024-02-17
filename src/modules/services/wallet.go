@@ -4,6 +4,7 @@ import (
 	"CrashCourse/GoApp/src/modules/dto"
 	"CrashCourse/GoApp/src/modules/entities"
 	"CrashCourse/GoApp/src/modules/repositories"
+	"CrashCourse/GoApp/src/modules/vo"
 	"fmt"
 )
 
@@ -28,14 +29,26 @@ func (ws *walletService) AddWallet(userId, currency string) error {
 	if err != nil {
 		return err
 	}
-
-	newWallet, err := entities.NewWallet(person.GetUserID(), currency)
+	owner, err := vo.NewOwner(person.GetUserID())
 	if err != nil {
 		return err
 	}
+
+	amount, err := vo.NewAmount(0, true)
+	if err != nil {
+		return err
+	}
+	curr, err := vo.NewCurrency(currency)
+	if err != nil {
+		return err
+	}
+
+	money := entities.NewMoney(amount, curr)
+	newWallet := entities.NewWallet(owner, *money)
+
 	for _, wa := range *person.GetWallets() {
 		if walletAlreadyExist(*newWallet, wa) {
-			return fmt.Errorf("wallet of type %s and currency %s already created", wa.Type, wa.Amount.Currency)
+			return fmt.Errorf("customer already has a wallet of type %s and currency in %s", wa.Type, wa.Money.Currency)
 		}
 	}
 
@@ -55,7 +68,22 @@ func (ws *walletService) Deposit(userId string, depositReq dto.DepositRequest) e
 		return err
 	}
 
-	if err := person.Deposit(depositReq.Amount, depositReq.WalletNumber); err != nil {
+	amount, err := vo.NewAmount(depositReq.Amount, false)
+	if err != nil {
+		return err
+	}
+
+	currency, err := vo.NewCurrency(depositReq.Currency)
+	if err != nil {
+		return err
+	}
+	walletNumber, err := vo.NewWalletNumber(depositReq.WalletNumber)
+	if err != nil {
+		return err
+	}
+
+	money := entities.NewMoney(amount, currency)
+	if err := person.Deposit(*money, walletNumber); err != nil {
 		return err
 	}
 
@@ -74,7 +102,22 @@ func (ws *walletService) Withdraw(userId string, withdrawReq dto.WithdrawRequest
 	if err != nil {
 		return err
 	}
-	if err := person.Withdraw(withdrawReq.Amount, withdrawReq.WalletNumber); err != nil {
+
+	amount, err := vo.NewAmount(withdrawReq.Amount, false)
+	if err != nil {
+		return err
+	}
+	currency, err := vo.NewCurrency(withdrawReq.Currency)
+	if err != nil {
+		return err
+	}
+	walletNumber, err := vo.NewWalletNumber(withdrawReq.WalletNumber)
+	if err != nil {
+		return err
+	}
+
+	money := entities.NewMoney(amount, currency)
+	if err := person.Withdraw(*money, walletNumber); err != nil {
 		return err
 	}
 
@@ -88,5 +131,5 @@ func (ws *walletService) Withdraw(userId string, withdrawReq dto.WithdrawRequest
 }
 
 func walletAlreadyExist(rWallet entities.Wallet, nWallet entities.Wallet) bool {
-	return rWallet.Type == nWallet.Type && rWallet.Amount.Currency == nWallet.Amount.Currency
+	return rWallet.Type == nWallet.Type && rWallet.Money.Currency == nWallet.Money.Currency
 }

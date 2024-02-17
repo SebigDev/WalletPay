@@ -24,7 +24,7 @@ func (mw *AuthMiddleware) UserAuthMiddlewareHandler(c *fiber.Ctx) error {
 
 	jwtToken, err := utils.GetToken(c)
 	if err != nil {
-		return fiber.NewError(fiber.StatusUnauthorized, err.Error())
+		return fiber.NewError(fiber.StatusUnauthorized, "An err has occurred")
 	}
 
 	if jwtToken.Valid {
@@ -44,7 +44,7 @@ func (mw *AuthMiddleware) UserAuthMiddlewareHandler(c *fiber.Ctx) error {
 			}
 		} else {
 			log.Println("Invalid claims")
-			return err
+			return fiber.NewError(fiber.StatusUnauthorized, "An error occurred")
 		}
 	} else {
 		log.Println("Token invalid")

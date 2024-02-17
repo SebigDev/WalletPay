@@ -18,7 +18,7 @@
         },
         "version": "2.0"
     },
-    "host": "localhost:3000",
+    "host": "localhost:3001",
     "basePath": "/",
     "paths": {
         "/api/v1/auth/login": {
@@ -141,7 +141,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Wallet"
+                    "Transaction"
                 ],
                 "summary": "create a new wallet",
                 "parameters": [
@@ -172,7 +172,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Wallet"
+                    "Transaction"
                 ],
                 "summary": "deposit in a wallet",
                 "parameters": [
@@ -193,6 +193,63 @@
                 }
             }
         },
+        "/api/v1/wallet/transaction": {
+            "post": {
+                "description": "Create a new transaction.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "create a new transaction",
+                "parameters": [
+                    {
+                        "description": "Create transaction",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreateTransaction"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/wallet/transactions": {
+            "get": {
+                "description": "Get all transactions.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Transaction"
+                ],
+                "summary": "get all transactions",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/responses.TransactionFullResponse"
+                            }
+                        }
+                    }
+                }
+            }
+        },
         "/api/v1/wallet/withdraw": {
             "post": {
                 "description": "Withdraw from a wallet.",
@@ -203,7 +260,7 @@
                     "application/json"
                 ],
                 "tags": [
-                    "Wallet"
+                    "Transaction"
                 ],
                 "summary": "Withdraw from a wallet",
                 "parameters": [
@@ -255,6 +312,32 @@
                 }
             }
         },
+        "dto.CreateTransaction": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "creditorCurrency": {
+                    "type": "string"
+                },
+                "creditorName": {
+                    "type": "string"
+                },
+                "creditorWalletAddress": {
+                    "type": "string"
+                },
+                "debitorCurrency": {
+                    "type": "string"
+                },
+                "debitorWalletAddress": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CreateWalletRequest": {
             "type": "object",
             "properties": {
@@ -268,6 +351,9 @@
             "properties": {
                 "amount": {
                     "type": "number"
+                },
+                "currency": {
+                    "type": "string"
                 },
                 "walletNo": {
                     "type": "string"
@@ -290,6 +376,9 @@
             "properties": {
                 "amount": {
                     "type": "number"
+                },
+                "currency": {
+                    "type": "string"
                 },
                 "walletNo": {
                     "type": "string"
@@ -348,6 +437,47 @@
                     "items": {
                         "$ref": "#/definitions/responses.WalletResponse"
                     }
+                }
+            }
+        },
+        "responses.TransactionFullResponse": {
+            "type": "object",
+            "properties": {
+                "amount": {
+                    "type": "number"
+                },
+                "beneficiaryCurrency": {
+                    "type": "string"
+                },
+                "beneficiaryName": {
+                    "type": "string"
+                },
+                "benficiaryAccount": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "debitorName": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "originatorAccount": {
+                    "type": "string"
+                },
+                "originatorCurrency": {
+                    "type": "string"
+                },
+                "transactionReference": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "string"
                 }
             }
         },

@@ -19,6 +19,23 @@ definitions:
       streetName:
         type: string
     type: object
+  dto.CreateTransaction:
+    properties:
+      amount:
+        type: number
+      creditorCurrency:
+        type: string
+      creditorName:
+        type: string
+      creditorWalletAddress:
+        type: string
+      debitorCurrency:
+        type: string
+      debitorWalletAddress:
+        type: string
+      description:
+        type: string
+    type: object
   dto.CreateWalletRequest:
     properties:
       currency:
@@ -28,6 +45,8 @@ definitions:
     properties:
       amount:
         type: number
+      currency:
+        type: string
       walletNo:
         type: string
     type: object
@@ -42,6 +61,8 @@ definitions:
     properties:
       amount:
         type: number
+      currency:
+        type: string
       walletNo:
         type: string
     type: object
@@ -81,6 +102,33 @@ definitions:
           $ref: '#/definitions/responses.WalletResponse'
         type: array
     type: object
+  responses.TransactionFullResponse:
+    properties:
+      amount:
+        type: number
+      beneficiaryCurrency:
+        type: string
+      beneficiaryName:
+        type: string
+      benficiaryAccount:
+        type: string
+      createdAt:
+        type: string
+      debitorName:
+        type: string
+      description:
+        type: string
+      id:
+        type: string
+      originatorAccount:
+        type: string
+      originatorCurrency:
+        type: string
+      transactionReference:
+        type: string
+      userId:
+        type: string
+    type: object
   responses.WalletResponse:
     properties:
       balance:
@@ -90,7 +138,7 @@ definitions:
       type:
         type: string
     type: object
-host: localhost:3000
+host: localhost:3001
 info:
   contact:
     email: support@swagger.io
@@ -194,7 +242,7 @@ paths:
           description: OK
       summary: create a new wallet
       tags:
-      - Wallet
+      - Transaction
   /api/v1/wallet/deposit:
     post:
       consumes:
@@ -214,7 +262,44 @@ paths:
           description: OK
       summary: deposit in a wallet
       tags:
-      - Wallet
+      - Transaction
+  /api/v1/wallet/transaction:
+    post:
+      consumes:
+      - application/json
+      description: Create a new transaction.
+      parameters:
+      - description: Create transaction
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreateTransaction'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: create a new transaction
+      tags:
+      - Transaction
+  /api/v1/wallet/transactions:
+    get:
+      consumes:
+      - application/json
+      description: Get all transactions.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/responses.TransactionFullResponse'
+            type: array
+      summary: get all transactions
+      tags:
+      - Transaction
   /api/v1/wallet/withdraw:
     post:
       consumes:
@@ -234,7 +319,7 @@ paths:
           description: OK
       summary: Withdraw from a wallet
       tags:
-      - Wallet
+      - Transaction
 schemes:
 - http
 swagger: "2.0"

@@ -32,3 +32,23 @@ type Amount struct {
 	Value    float64 `json:"value"`
 	Currency string  `json:"currency"`
 }
+
+type TransactionResponse struct {
+	TransactionId        string `json:"transactionID"`
+	TransactionReference string `json:"transactionReference"`
+}
+
+type TransactionFullResponse struct {
+	ID                   string    `json:"id"`
+	TransactionReference string    `json:"transactionReference"`
+	BeneficiaryAccount   string    `json:"benficiaryAccount"`
+	BeneficiaryCurrency  string    `json:"beneficiaryCurrency"`
+	BeneficiaryName      string    `json:"beneficiaryName"`
+	OriginatorAccount    string    `json:"originatorAccount"`
+	OriginatorCurrency   string    `json:"originatorCurrency"`
+	DebitorName          string    `json:"debitorName"`
+	Amount               float64   `json:"amount"`
+	Description          string    `json:"description"`
+	CreatedAt            time.Time `json:"createdAt"`
+	UserId               string    `json:"userId"`
+}
