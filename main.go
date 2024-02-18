@@ -32,7 +32,7 @@ func main() {
 	app := fiber.New()
 	app.Use(logger.New())
 	app.Use(recover.New())
-	routes.MapRoute(app, &storeResponse)
+	routes.MapCommon(app, &storeResponse)
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",

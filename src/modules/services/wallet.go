@@ -55,10 +55,10 @@ func (ws *walletService) AddWallet(userId, currency string) error {
 	person.SetWallet(*newWallet)
 	dao := person.MapToDao()
 	err = ws.UserRepository.UpdatePerson(dao)
-
 	if err != nil {
 		return err
 	}
+
 	return nil
 }
 
