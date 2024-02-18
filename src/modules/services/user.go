@@ -25,11 +25,13 @@ type IUserService interface {
 
 type userService struct {
 	UserRepository repositories.IUserRepository
+	EventBus       *EventBus
 }
 
-func NewUserService(userRepository repositories.IUserRepository) IUserService {
+func NewUserService(userRepository repositories.IUserRepository, eventBus *EventBus) IUserService {
 	return &userService{
 		UserRepository: userRepository,
+		EventBus:       eventBus,
 	}
 }
 
@@ -42,6 +44,14 @@ func (u *userService) CreateNewPerson(data dto.CreatePerson) error {
 	if err != nil {
 		return err
 	}
+	u.EventBus.Publish(Event{
+		Data: WalletCreatedEvent{
+			UserId:    person.UserId,
+			CreatedAt: time.Now().UTC(),
+		},
+		Topic:     WalletCreated,
+		Timestamp: time.Now().UTC(),
+	})
 	return nil
 }
 
