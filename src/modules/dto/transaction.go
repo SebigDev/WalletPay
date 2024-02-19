@@ -8,4 +8,5 @@ type CreateTransaction struct {
 	DebitorWalletAddress  string  `json:"debitorWalletAddress"`
 	Description           string  `json:"description"`
 	CreditorName          string  `json:"creditorName"`
+	Pin                   string  `json:"pin"`
 }

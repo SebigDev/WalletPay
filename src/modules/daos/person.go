@@ -18,6 +18,7 @@ type PersonDao struct {
 	PostalCode   string          `bson:"postalCode"`
 	City         string          `bson:"city"`
 	Wallets      []WalletDao     `bson:"wallets"`
+	Pin          PinDao          `bson:"pin"`
 }
 
 type EmailAddressDao struct {
@@ -26,4 +27,9 @@ type EmailAddressDao struct {
 
 type PasswordDao struct {
 	Value []byte `bson:"value"`
+}
+
+type PinDao struct {
+	HashValue    []byte `bson:"hashValue"`
+	RecoverValue string `bson:"recoverValue"`
 }

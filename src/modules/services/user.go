@@ -6,6 +6,7 @@ import (
 	"CrashCourse/GoApp/src/modules/entities"
 	"CrashCourse/GoApp/src/modules/repositories"
 	"CrashCourse/GoApp/src/modules/responses"
+	"CrashCourse/GoApp/src/modules/vo"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
@@ -21,6 +22,7 @@ type IUserService interface {
 	LoginPerson(req dto.LoginRequest) (responses.AuthResponse, error)
 	GetPersonById(id string) (responses.PersonResponse, error)
 	GetAllUsers() ([]responses.PersonResponse, error)
+	AddPin(userId, pin string) error
 }
 
 type userService struct {
@@ -40,18 +42,36 @@ func (u *userService) CreateNewPerson(data dto.CreatePerson) error {
 	if err != nil {
 		return err
 	}
-	err = u.UserRepository.AddUser(person)
+	pin, err := vo.NewValue(data.Pin)
 	if err != nil {
 		return err
 	}
-	u.EventBus.Publish(Event{
-		Data: WalletCreatedEvent{
-			UserId:    person.UserId,
-			CreatedAt: time.Now().UTC(),
-		},
-		Topic:     WalletCreated,
-		Timestamp: time.Now().UTC(),
-	})
+
+	err = u.UserRepository.AddUser(person.MapToDao())
+	if err != nil {
+		return err
+	}
+
+	u.EventBus.Publish(*ToEvent(WalletCreatedEvent{UserId: person.GetUserID(), Currency: string(vo.EURO)}, WalletCreated))
+
+	time.Sleep(time.Second * 2)
+
+	u.EventBus.Publish(*ToEvent(PinCreatedEvent{UserId: person.GetUserID(), Pin: pin.String()}, PinCreated))
+	return nil
+}
+
+func (u *userService) AddPin(userId, pin string) error {
+	person, err := u.UserRepository.GetUserById(userId)
+	if err != nil {
+		return err
+	}
+
+	person.NewPin(pin)
+	err = u.UserRepository.UpdatePerson(person.MapToDao())
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

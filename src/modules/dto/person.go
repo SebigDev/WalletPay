@@ -9,6 +9,7 @@ type CreatePerson struct {
 	StreetName   string `json:"streetName"`
 	PostalCode   string `json:"postalCode"`
 	City         string `json:"city"`
+	Pin          string `json:"pin"`
 }
 
 type LoginRequest struct {

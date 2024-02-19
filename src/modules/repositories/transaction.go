@@ -12,7 +12,7 @@ import (
 )
 
 type ITransactionRepository interface {
-	Submit(trx entities.Transaction) error
+	Submit(trx *entities.Transaction) error
 	GetTransaction(userId string) (*[]daos.TransactionDao, error)
 }
 
@@ -28,7 +28,7 @@ func NewTransactionRepository(collection *mongo.Collection, ctx context.Context)
 	}
 }
 
-func (tx *TransactionRepository) Submit(trx entities.Transaction) error {
+func (tx *TransactionRepository) Submit(trx *entities.Transaction) error {
 	res, err := tx.collection.InsertOne(tx.context, trx.Create())
 	if err != nil {
 		return fmt.Errorf("an error occurred submitting transaction: %w", err)

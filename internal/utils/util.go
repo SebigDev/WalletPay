@@ -5,6 +5,7 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
@@ -50,4 +51,8 @@ func GetUserIdFromToken(ctx *fiber.Ctx) (string, error) {
 	}
 
 	return userId, nil
+}
+
+func Length(p string) int {
+	return len(strings.TrimSpace(p))
 }

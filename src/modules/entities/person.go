@@ -20,17 +20,17 @@ type Person struct {
 	wallets     []Wallet
 }
 
-func NewPerson(p dto.CreatePerson) (daos.PersonDao, error) {
+func NewPerson(p dto.CreatePerson) (*Person, error) {
 	agg := &UserAggregate{
 		UserId: uuid.New().String(),
 	}
 	emailAddress, err := vo.CreateEmailAddress(p.EmailAddress)
 	if err != nil {
-		return daos.PersonDao{}, err
+		return &Person{}, err
 	}
 	password, err := vo.CreatePassword(p.Password)
 	if err != nil {
-		return daos.PersonDao{}, err
+		return &Person{}, err
 	}
 
 	user := &User{
@@ -42,6 +42,7 @@ func NewPerson(p dto.CreatePerson) (daos.PersonDao, error) {
 		CreateAt:     time.Now().UTC(),
 		IsActive:     true,
 		IsVerified:   true,
+		Pin:          vo.Pin{},
 	}
 
 	person := Person{
@@ -52,7 +53,7 @@ func NewPerson(p dto.CreatePerson) (daos.PersonDao, error) {
 		city:        p.City,
 		wallets:     make([]Wallet, 0),
 	}
-	return person.MapToDao(), nil
+	return &person, nil
 }
 
 func (p *Person) MapToDao() daos.PersonDao {
@@ -70,6 +71,10 @@ func (p *Person) MapToDao() daos.PersonDao {
 		IsVerified:   p.user.IsVerified,
 		CreatedAt:    p.user.CreateAt,
 		Wallets:      *WalletsToDao(p.wallets),
+		Pin: daos.PinDao{
+			HashValue:    p.user.Pin.ValueHash,
+			RecoverValue: p.user.Pin.RecoverValue,
+		},
 	}
 }
 
@@ -143,12 +148,28 @@ func (p *Person) Withdraw(money Money, walletNumber vo.WalletNumber) error {
 	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNumber)
 }
 
+func (p *Person) NewPin(pin string) {
+	p.user.Pin = *vo.NewPin(vo.Value(pin))
+}
+
 func (p *Person) VerifyPassword(password string) error {
 	return vo.VerifyPassword(password, p.user.Password.Value)
 }
 
+func (p *Person) VerifyPin(pin string) error {
+	return vo.Verify(pin, p.user.Pin)
+}
+
+func (p *Person) VerifyPinRecovery(pin string) error {
+	return vo.VerifyRecover(pin, p.user.Pin)
+}
+
 func (p *Person) GetUserID() string {
 	return p.user.Aggregate.UserId
+}
+
+func (p *Person) GetRecoverPin() string {
+	return p.user.Pin.RecoverValue
 }
 
 func (p *Person) HasWallets() bool {
