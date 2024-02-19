@@ -1,7 +1,9 @@
 package vo
 
 import (
+	"CrashCourse/GoApp/internal/utils"
 	"fmt"
+	"slices"
 
 	"github.com/google/uuid"
 )
@@ -21,10 +23,10 @@ func (p *Value) String() string {
 }
 
 func NewValue(val string) (Value, error) {
-	if len(val) == 0 {
+	if utils.Length(val) == 0 {
 		return "", PinError{ErrorMsg: "Pin value must be provided"}
 	}
-	if len(val) < 4 || len(val) > 4 {
+	if utils.Length(val) < 4 || utils.Length(val) > 4 {
 		return "", PinError{ErrorMsg: "Pin value must have a length of 4"}
 	}
 	return Value(val), nil
@@ -43,16 +45,26 @@ func NewPin(pin Value) *Pin {
 }
 
 func Verify(pin string, p Pin) error {
-	hashedPin := []byte(pin)
-	for i, b := range p.ValueHash {
-		if b != hashedPin[i] {
-			return PinError{ErrorMsg: "You have provided an invalid PIN"}
-		}
+	cleanPin, err := NewValue(pin)
+	if err != nil {
+		return err
 	}
-	return nil
+	hashedPin := []byte(cleanPin)
+	// for i, b := range p.ValueHash {
+	// 	if b != hashedPin[i] {
+	// 		return PinError{ErrorMsg: "You have provided an invalid PIN"}
+	// 	}
+	// }
+	if slices.Equal(p.ValueHash, hashedPin) {
+		return nil
+	}
+	return PinError{ErrorMsg: "You have provided an invalid PIN"}
 }
 
 func VerifyRecover(recoveryPin string, p Pin) error {
+	if utils.Length(recoveryPin) == 0 {
+		return PinError{ErrorMsg: "You have provided an invalid or empty recovery PIN"}
+	}
 	if recoveryPin != p.RecoverValue {
 		return PinError{ErrorMsg: "You have provided an invalid recovery PIN"}
 	}

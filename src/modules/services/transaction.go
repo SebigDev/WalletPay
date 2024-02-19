@@ -31,6 +31,9 @@ func (ts *TransactionService) Submit(userId string, trx dto.CreateTransaction) (
 	if err != nil {
 		return responses.TransactionResponse{}, err
 	}
+	if err := person.VerifyPin(trx.Pin); err != nil {
+		return responses.TransactionResponse{}, err
+	}
 	toWallet, err := vo.NewWalletNumber(trx.CreditorWalletAddress)
 	if err != nil {
 		return responses.TransactionResponse{}, err
