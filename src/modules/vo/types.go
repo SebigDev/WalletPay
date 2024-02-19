@@ -26,8 +26,8 @@ func (e TypeError) Error() string {
 	return fmt.Sprintf(e.ErrorMsg)
 }
 
-func NewMoneyConverted(amount Amount, to Currency, from Currency) MoneyConverted {
-	mult := demoConvert(to.String(), from.String())
+func NewMoneyConverted(amount Amount, to, from Currency) MoneyConverted {
+	mult := demoConvert(to, from)
 	return MoneyConverted(amount * Amount(mult))
 }
 
@@ -86,12 +86,10 @@ func (o *Owner) String() string {
 	return string(*o)
 }
 
-func demoConvert(toCurrency, fromCurrency string) float64 {
-	if toCurrency == string(EURO) && fromCurrency == string(EURO) {
+func demoConvert(toCurrency, fromCurrency Currency) float64 {
+	if (toCurrency == EURO && fromCurrency == EURO) || (toCurrency == GBP && fromCurrency == GBP) {
 		return 1
-	} else if toCurrency == string(GBP) && fromCurrency == string(GBP) {
-		return 1
-	} else if toCurrency == string(GBP) && fromCurrency == string(EURO) {
+	} else if toCurrency == GBP && fromCurrency == EURO {
 		return 0.89
 	} else {
 		return 1.2

@@ -76,7 +76,7 @@ func (ts *TransactionService) Submit(userId string, trx dto.CreateTransaction) (
 	}
 
 	//SUBMIT PAYMENT
-	if err := ts.TransactionRepo.Submit(*transaction); err != nil {
+	if err := ts.TransactionRepo.Submit(transaction); err != nil {
 		return responses.TransactionResponse{}, err
 	}
 

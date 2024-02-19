@@ -56,5 +56,6 @@ func MapCommon(app *fiber.App, store *db.MongoResponse) {
 
 	services.New(eventBus,
 		services.WithWalletService(walletService),
+		services.WithUserService(userService),
 	)
 }

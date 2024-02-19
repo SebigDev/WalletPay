@@ -14,4 +14,5 @@ type User struct {
 	CreateAt     time.Time
 	IsActive     bool
 	IsVerified   bool
+	Pin          vo.Pin
 }
