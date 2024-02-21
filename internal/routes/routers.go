@@ -21,20 +21,24 @@ func MapCommon(app *fiber.App, store *db.MongoResponse) {
 	//COLLECTION
 	userCollection := store.ClientR.Database("goapp").Collection("users")
 	trxCollection := store.ClientR.Database("goapp").Collection("transactions")
+	payReqCollection := store.ClientR.Database("goapp").Collection("payments")
 
 	//REPOSITORIES
 	userRepository := repositories.NewUserRepository(userCollection, store.CtxR)
 	trxRepository := repositories.NewTransactionRepository(trxCollection, store.CtxR)
+	payReqRepository := repositories.NewPaymentRequestRepository(payReqCollection, store.CtxR)
 
 	//SERVICES
 	userService := services.NewUserService(userRepository, eventBus)
 	walletService := services.NewWalletService(userRepository)
 	trxService := services.NewTransactionService(trxRepository, userRepository)
+	payReqService := services.NewPaymentRequestService(payReqRepository, userRepository)
 
 	//HANDLERS
 	userHandler := handlers.NewUserHandler(userService)
 	authHandler := handlers.NewAuthHandler(userService)
 	walletHander := handlers.NewWalletHandler(walletService, trxService)
+	payReqHandler := handlers.NewPaymentRequestHandler(payReqService)
 
 	//person Routes
 
@@ -53,7 +57,10 @@ func MapCommon(app *fiber.App, store *db.MongoResponse) {
 	v1.Post("/wallet/withdraw", authMiddleware.UserAuthMiddlewareHandler, walletHander.Withdraw)
 	v1.Post("/wallet/transaction", authMiddleware.UserAuthMiddlewareHandler, walletHander.CreateTransaction)
 	v1.Get("/wallet/transactions", authMiddleware.UserAuthMiddlewareHandler, walletHander.GetTransactions)
+	v1.Post("/request", authMiddleware.UserAuthMiddlewareHandler, payReqHandler.SendRequest)
+	v1.Post("/request/acknowledge", authMiddleware.UserAuthMiddlewareHandler, payReqHandler.AcknowldgeRequest)
 
+	//SRTVICES FOREVENT BUS
 	services.New(eventBus,
 		services.WithWalletService(walletService),
 		services.WithUserService(userService),

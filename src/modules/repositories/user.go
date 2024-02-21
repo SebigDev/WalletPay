@@ -22,14 +22,14 @@ type IUserRepository interface {
 }
 
 type userRepository struct {
-	Collection *mongo.Collection
-	Ctx        context.Context
+	collection *mongo.Collection
+	ctx        context.Context
 }
 
 func NewUserRepository(collection *mongo.Collection, ctx context.Context) IUserRepository {
 	return &userRepository{
-		Collection: collection,
-		Ctx:        ctx,
+		collection: collection,
+		ctx:        ctx,
 	}
 }
 
@@ -43,7 +43,7 @@ func (u *userRepository) AddUser(person daos.PersonDao) error {
 		return errors.New("user with email address already exists")
 	}
 
-	_, err = u.Collection.InsertOne(u.Ctx, person)
+	_, err = u.collection.InsertOne(u.ctx, person)
 	if err != nil {
 		return err
 	}
@@ -60,7 +60,7 @@ func (u *userRepository) GetUserByEmailAddress(emailAddress string) (*entities.P
 			"value": emailAddress,
 		}}
 
-	err := u.Collection.FindOne(u.Ctx, filter).Decode(&dao)
+	err := u.collection.FindOne(u.ctx, filter).Decode(&dao)
 
 	if err != nil {
 		if err.Error() == MongoNoDocumentError {
@@ -76,7 +76,7 @@ func (u *userRepository) GetUserById(id string) (*entities.Person, error) {
 	var dao daos.PersonDao
 
 	filter := bson.M{"userId": id}
-	err := u.Collection.FindOne(u.Ctx, filter).Decode(&dao)
+	err := u.collection.FindOne(u.ctx, filter).Decode(&dao)
 
 	if err != nil {
 		if err.Error() == MongoNoDocumentError {
@@ -90,7 +90,7 @@ func (u *userRepository) GetUserById(id string) (*entities.Person, error) {
 
 func (u *userRepository) GetUsers() (*[]entities.Person, error) {
 
-	cursor, err := u.Collection.Find(u.Ctx, bson.D{{}})
+	cursor, err := u.collection.Find(u.ctx, bson.D{{}})
 
 	if err != nil {
 		log.Fatal(err)
@@ -112,7 +112,7 @@ func (u *userRepository) GetUsers() (*[]entities.Person, error) {
 func (u *userRepository) UpdatePerson(person daos.PersonDao) error {
 	filter := bson.M{"userId": person.UserId}
 
-	_, err := u.Collection.ReplaceOne(u.Ctx, filter, person)
+	_, err := u.collection.ReplaceOne(u.ctx, filter, person)
 	if err != nil {
 		log.Fatal(err)
 	}

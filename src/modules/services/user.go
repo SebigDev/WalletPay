@@ -1,6 +1,7 @@
 package services
 
 import (
+	"CrashCourse/GoApp/config"
 	"CrashCourse/GoApp/internal/utils"
 	"CrashCourse/GoApp/src/modules/dto"
 	"CrashCourse/GoApp/src/modules/entities"
@@ -128,7 +129,8 @@ func (u *userService) LoginPerson(req dto.LoginRequest) (responses.AuthResponse,
 	claims["hash"] = hashString
 	claims["sub"] = person.GetUserID()
 	claims["exp"] = time.Now().UTC().Add(time.Hour * 24).Unix()
-	tokenString, err := token.SignedString([]byte("SecretKey"))
+	claims["issuer"] = []byte(config.GoEnv("ISSUER"))
+	tokenString, err := token.SignedString([]byte(config.GoEnv("SECRET_KEY")))
 
 	if err != nil {
 		return responses.AuthResponse{}, err

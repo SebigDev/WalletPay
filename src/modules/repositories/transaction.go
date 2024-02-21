@@ -16,19 +16,19 @@ type ITransactionRepository interface {
 	GetTransaction(userId string) (*[]daos.TransactionDao, error)
 }
 
-type TransactionRepository struct {
+type transactionRepository struct {
 	collection *mongo.Collection
 	context    context.Context
 }
 
 func NewTransactionRepository(collection *mongo.Collection, ctx context.Context) ITransactionRepository {
-	return &TransactionRepository{
+	return &transactionRepository{
 		collection: collection,
 		context:    ctx,
 	}
 }
 
-func (tx *TransactionRepository) Submit(trx *entities.Transaction) error {
+func (tx *transactionRepository) Submit(trx *entities.Transaction) error {
 	res, err := tx.collection.InsertOne(tx.context, trx.Create())
 	if err != nil {
 		return fmt.Errorf("an error occurred submitting transaction: %w", err)
@@ -37,7 +37,7 @@ func (tx *TransactionRepository) Submit(trx *entities.Transaction) error {
 	return nil
 }
 
-func (tx *TransactionRepository) GetTransaction(userId string) (*[]daos.TransactionDao, error) {
+func (tx *transactionRepository) GetTransaction(userId string) (*[]daos.TransactionDao, error) {
 	cursor, err := tx.collection.Find(tx.context, bson.M{"userId": userId})
 	if err != nil {
 		log.Fatal(err)
