@@ -10,3 +10,14 @@ type CreateTransaction struct {
 	CreditorName          string  `json:"creditorName"`
 	Pin                   string  `json:"pin"`
 }
+
+type CreatePayRequest struct {
+	CreditorWallet string  `json:"creditorWallet"`
+	Amount         float64 `json:"amount"`
+	Currency       string  `json:"currency"`
+	RequestPartyId string  `json:"requestPartyId"`
+	Pin            string  `json:"pin"`
+}
+type AckRequest struct {
+	RequestId string `json:"requestId"`
+}

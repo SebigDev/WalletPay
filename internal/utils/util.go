@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"CrashCourse/GoApp/config"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
@@ -10,8 +11,6 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )
-
-var SecretKey = []byte("SecretKey")
 
 func GenerateSecureToken() string {
 	b := make([]byte, 24)
@@ -23,12 +22,22 @@ func GenerateSecureToken() string {
 
 func GetToken(c *fiber.Ctx) (*jwt.Token, error) {
 	authorization := c.Get("Authorization")
+	if !strings.Contains(authorization, "Bearer") {
+		return nil, fmt.Errorf("unrecognized token")
+	}
+
+	arrayToken := strings.Split(authorization, " ")
+	if len(arrayToken) != 2 {
+		return nil, fmt.Errorf("unrecognized token")
+	}
+
+	encodedToken := arrayToken[1]
 	jwtToken, err := jwt.Parse(
-		authorization, func(token *jwt.Token) (interface{}, error) {
+		encodedToken, func(token *jwt.Token) (interface{}, error) {
 			if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 				return nil, fmt.Errorf("invalid signing method")
 			}
-			return SecretKey, nil
+			return []byte(config.GoEnv("SECRET_KEY")), nil
 		})
 	if err != nil {
 		log.Println(err)
