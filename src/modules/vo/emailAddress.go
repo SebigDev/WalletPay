@@ -1,9 +1,9 @@
 package vo
 
 import (
+	"CrashCourse/GoApp/internal/utils"
 	"fmt"
 	"net/mail"
-	"strings"
 )
 
 type EmailAddress struct {
@@ -19,7 +19,7 @@ func (e EmailAddressError) Error() string {
 }
 
 func CreateEmailAddress(emailAddress string) (*EmailAddress, error) {
-	if len(strings.TrimSpace(emailAddress)) == 0 {
+	if utils.Length(emailAddress) == 0 {
 		return &EmailAddress{}, EmailAddressError{ErrorMsg: "Email address has to be provided"}
 	}
 	isValid := validateEmail(emailAddress)

@@ -49,14 +49,21 @@ func MapCommon(app *fiber.App, store *db.MongoResponse) {
 
 	//swagger routes
 	app.Get("/swagger/*", swagger.HandlerDefault)
+
 	//Authenticated routes
 	v1.Get("/user", authMiddleware.UserAuthMiddlewareHandler, userHandler.GetPersonById)
 	v1.Get("/users", authMiddleware.UserAuthMiddlewareHandler, userHandler.GetAllUsers)
+	v1.Post("/user/change-password", authMiddleware.UserAuthMiddlewareHandler, userHandler.ChangePassword)
+	v1.Post("/user/change-pin", authMiddleware.UserAuthMiddlewareHandler, userHandler.ChangePin)
+
+	//WALLET
 	v1.Post("/wallet/add", authMiddleware.UserAuthMiddlewareHandler, walletHander.AddWallet)
 	v1.Post("/wallet/deposit", authMiddleware.UserAuthMiddlewareHandler, walletHander.Deposit)
 	v1.Post("/wallet/withdraw", authMiddleware.UserAuthMiddlewareHandler, walletHander.Withdraw)
 	v1.Post("/wallet/transaction", authMiddleware.UserAuthMiddlewareHandler, walletHander.CreateTransaction)
 	v1.Get("/wallet/transactions", authMiddleware.UserAuthMiddlewareHandler, walletHander.GetTransactions)
+
+	//REQUEST
 	v1.Post("/request", authMiddleware.UserAuthMiddlewareHandler, payReqHandler.SendRequest)
 	v1.Post("/request/acknowledge", authMiddleware.UserAuthMiddlewareHandler, payReqHandler.AcknowldgeRequest)
 

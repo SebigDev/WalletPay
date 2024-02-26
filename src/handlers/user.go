@@ -14,6 +14,8 @@ type IUserHandler interface {
 	CreatePerson(ctx *fiber.Ctx) error
 	GetAllUsers(ctx *fiber.Ctx) error
 	GetPersonById(ctx *fiber.Ctx) error
+	ChangePassword(ctx *fiber.Ctx) error
+	ChangePin(ctx *fiber.Ctx) error
 }
 
 type userHandler struct {
@@ -77,6 +79,7 @@ func (s userHandler) GetAllUsers(ctx *fiber.Ctx) error {
 // GetPerson func gets person by given ID or 404 error.
 // @Description Get person by given ID.
 // @Tags Person
+// @Summary get user by ID
 // @Accept json
 // @Produce json
 // @Success 200 {object} responses.PersonResponse
@@ -96,5 +99,73 @@ func (s userHandler) GetPersonById(ctx *fiber.Ctx) error {
 	}
 
 	response := responses.CreateResponse(person)
+	return ctx.JSON(response)
+}
+
+// Change Password func changes password for a user.
+// @Description Change password.
+// @Tags Person
+// @Summary change user's password
+// @Accept json
+// @Produce json
+// @Param person body dto.CreatePasswordChangeRequest true "Change Password"
+// @Success 200
+// @Router /api/v1/user/change-password [post]
+func (s userHandler) ChangePassword(ctx *fiber.Ctx) error {
+
+	userId, err := utils.GetUserIdFromToken(ctx)
+	if err != nil {
+		log.Println(err)
+		return ctx.Status(400).JSON(responses.CreateErrorResponse(err.Error()))
+	}
+
+	passwordReq := new(dto.CreatePasswordChangeRequest)
+
+	if err := ctx.BodyParser(passwordReq); err != nil {
+		log.Println(err)
+		return ctx.Status(500).JSON(responses.CreateErrorResponse("Error parsing request"))
+	}
+
+	err = s.UserService.ChangePassword(userId, *passwordReq)
+	if err != nil {
+		log.Println(err)
+		return ctx.Status(400).JSON(responses.CreateErrorResponse(err.Error()))
+	}
+
+	response := responses.CreateResponse("Password Changed successfully.")
+	return ctx.JSON(response)
+}
+
+// Change Pin func changes password for a user.
+// @Description Change pin.
+// @Tags Person
+// @Summary change user's pin
+// @Accept json
+// @Produce json
+// @Param person body dto.CreatePinChangeRequest true "Change Pin"
+// @Success 200
+// @Router /api/v1/user/change-pin [post]
+func (s userHandler) ChangePin(ctx *fiber.Ctx) error {
+
+	userId, err := utils.GetUserIdFromToken(ctx)
+	if err != nil {
+		log.Println(err)
+		return ctx.Status(400).JSON(responses.CreateErrorResponse(err.Error()))
+	}
+
+	pinRequest := new(dto.CreatePinChangeRequest)
+
+	if err := ctx.BodyParser(pinRequest); err != nil {
+		log.Println(err)
+		return ctx.Status(500).JSON(responses.CreateErrorResponse("Error parsing request"))
+	}
+
+	err = s.UserService.ChangePin(userId, *pinRequest)
+	if err != nil {
+		log.Println(err)
+		return ctx.Status(400).JSON(responses.CreateErrorResponse(err.Error()))
+	}
+
+	response := responses.CreateResponse("Pin Changed successfully.")
 	return ctx.JSON(response)
 }

@@ -72,7 +72,7 @@ func (p *Person) MapToDao() daos.PersonDao {
 		CreatedAt:    p.user.CreateAt,
 		Wallets:      *WalletsToDao(p.wallets),
 		Pin: daos.PinDao{
-			HashValue:    p.user.Pin.ValueHash,
+			HashValue:    p.user.Pin.HashValue,
 			RecoverValue: p.user.Pin.RecoverValue,
 		},
 	}
@@ -91,6 +91,7 @@ func MapFromDao(p *daos.PersonDao) Person {
 			IsActive:     p.IsActive,
 			IsVerified:   p.IsVerified,
 			CreateAt:     p.CreatedAt,
+			Pin:          vo.Pin(p.Pin),
 		},
 		houseNumber: p.HouseNumber,
 		postalCode:  p.PostalCode,
@@ -186,4 +187,28 @@ func (p *Person) IsNotNil() bool {
 
 func (p *Person) GetWallets() *[]Wallet {
 	return &p.wallets
+}
+
+func (p *Person) ChangePassword(oldPass, newPass string) error {
+	if err := vo.VerifyPassword(oldPass, p.user.Password.Value); err != nil {
+		return err
+	}
+	password, err := vo.CreatePassword(newPass)
+	if err != nil {
+		return err
+	}
+	p.user.Password = password
+	return nil
+}
+
+func (p *Person) ChangePin(oldPin, newPin vo.Value) error {
+	if err := vo.Verify(oldPin.String(), p.user.Pin); err != nil {
+		return err
+	}
+	nPin, err := vo.NewValue(newPin.String())
+	if err != nil {
+		return err
+	}
+	p.user.Pin = *vo.NewPin(nPin)
+	return nil
 }

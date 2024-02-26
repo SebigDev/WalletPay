@@ -1,5 +1,12 @@
 basePath: /
 definitions:
+  dto.CreatePasswordChangeRequest:
+    properties:
+      newPassword:
+        type: string
+      oldPassword:
+        type: string
+    type: object
   dto.CreatePerson:
     properties:
       city:
@@ -14,9 +21,18 @@ definitions:
         type: string
       password:
         type: string
+      pin:
+        type: string
       postalCode:
         type: string
       streetName:
+        type: string
+    type: object
+  dto.CreatePinChangeRequest:
+    properties:
+      newPin:
+        type: string
+      oldPin:
         type: string
     type: object
   dto.CreateTransaction:
@@ -34,6 +50,8 @@ definitions:
       debitorWalletAddress:
         type: string
       description:
+        type: string
+      pin:
         type: string
     type: object
   dto.CreateWalletRequest:
@@ -184,6 +202,47 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/responses.PersonResponse'
+      summary: get user by ID
+      tags:
+      - Person
+  /api/v1/user/change-password:
+    post:
+      consumes:
+      - application/json
+      description: Change password.
+      parameters:
+      - description: Change Password
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePasswordChangeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: change user's password
+      tags:
+      - Person
+  /api/v1/user/change-pin:
+    post:
+      consumes:
+      - application/json
+      description: Change pin.
+      parameters:
+      - description: Change Pin
+        in: body
+        name: person
+        required: true
+        schema:
+          $ref: '#/definitions/dto.CreatePinChangeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+      summary: change user's pin
       tags:
       - Person
   /api/v1/users:
