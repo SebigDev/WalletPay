@@ -188,7 +188,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"firstName\": \"Eloka\",\n    \"lastName\" : \"Igwe\",\n    \"emailAddress\": \"elokaigwe@yahoo.com\",\n    \"password\": \"P@ssw0rd\",\n    \"houseNumber\" : \"30 B9\",\n    \"streetName\" : \"Marius Bauerstraat\",\n    \"postalCode\" : \"1066AR\",\n    \"city\" : \"Amsterdam\"\n}",
+					"raw": "",
 					"options": {
 						"raw": {
 							"language": "json"
