@@ -16,3 +16,13 @@ type LoginRequest struct {
 	EmailAddress string `json:"emailAddress"`
 	Password     string `json:"password"`
 }
+
+type CreatePasswordChangeRequest struct {
+	NewPassword string `json:"newPassword"`
+	OldPassword string `json:"oldPassword"`
+}
+
+type CreatePinChangeRequest struct {
+	NewPin string `json:"newPin"`
+	OldPin string `json:"oldPin"`
+}

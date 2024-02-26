@@ -67,12 +67,75 @@ const docTemplate = `{
                 "tags": [
                     "Person"
                 ],
+                "summary": "get user by ID",
                 "responses": {
                     "200": {
                         "description": "OK",
                         "schema": {
                             "$ref": "#/definitions/responses.PersonResponse"
                         }
+                    }
+                }
+            }
+        },
+        "/api/v1/user/change-password": {
+            "post": {
+                "description": "Change password.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Person"
+                ],
+                "summary": "change user's password",
+                "parameters": [
+                    {
+                        "description": "Change Password",
+                        "name": "person",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreatePasswordChangeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    }
+                }
+            }
+        },
+        "/api/v1/user/change-pin": {
+            "post": {
+                "description": "Change pin.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Person"
+                ],
+                "summary": "change user's pin",
+                "parameters": [
+                    {
+                        "description": "Change Pin",
+                        "name": "person",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/dto.CreatePinChangeRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK"
                     }
                 }
             }
@@ -286,6 +349,17 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "dto.CreatePasswordChangeRequest": {
+            "type": "object",
+            "properties": {
+                "newPassword": {
+                    "type": "string"
+                },
+                "oldPassword": {
+                    "type": "string"
+                }
+            }
+        },
         "dto.CreatePerson": {
             "type": "object",
             "properties": {
@@ -307,10 +381,24 @@ const docTemplate = `{
                 "password": {
                     "type": "string"
                 },
+                "pin": {
+                    "type": "string"
+                },
                 "postalCode": {
                     "type": "string"
                 },
                 "streetName": {
+                    "type": "string"
+                }
+            }
+        },
+        "dto.CreatePinChangeRequest": {
+            "type": "object",
+            "properties": {
+                "newPin": {
+                    "type": "string"
+                },
+                "oldPin": {
                     "type": "string"
                 }
             }
@@ -337,6 +425,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "description": {
+                    "type": "string"
+                },
+                "pin": {
                     "type": "string"
                 }
             }

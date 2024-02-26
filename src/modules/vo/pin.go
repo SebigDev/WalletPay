@@ -3,7 +3,6 @@ package vo
 import (
 	"CrashCourse/GoApp/internal/utils"
 	"fmt"
-	"slices"
 
 	"github.com/google/uuid"
 )
@@ -33,28 +32,28 @@ func NewValue(val string) (Value, error) {
 }
 
 type Pin struct {
-	ValueHash    []byte
+	HashValue    []byte
 	RecoverValue string
 }
 
 func NewPin(pin Value) *Pin {
 	return &Pin{
-		ValueHash:    []byte(pin),
+		HashValue:    []byte(pin),
 		RecoverValue: uuid.NewString(),
 	}
 }
 
 func Verify(pin string, p Pin) error {
+	savedPin := string(p.HashValue)
 	cleanPin, err := NewValue(pin)
 	if err != nil {
 		return err
 	}
-	hashedPin := []byte(cleanPin)
-	if slices.Equal(p.ValueHash, hashedPin) {
+
+	if savedPin == cleanPin.String() {
 		return nil
 	}
-	//return PinError{ErrorMsg: "You have provided an invalid PIN"}
-	return nil
+	return PinError{ErrorMsg: "You have provided an invalid PIN"}
 }
 
 func VerifyRecover(recoveryPin string, p Pin) error {

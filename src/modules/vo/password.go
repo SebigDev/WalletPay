@@ -1,8 +1,8 @@
 package vo
 
 import (
+	"CrashCourse/GoApp/internal/utils"
 	"fmt"
-	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -16,11 +16,11 @@ type PasswordError struct {
 }
 
 func (e PasswordError) Error() string {
-	return fmt.Sprintln(e.ErrorMsg)
+	return fmt.Sprintf(e.ErrorMsg)
 }
 
 func CreatePassword(password string) (Password, error) {
-	if len(strings.TrimSpace(password)) == 0 {
+	if utils.Length(password) == 0 {
 		return Password{}, PasswordError{ErrorMsg: "Password has to be provided"}
 	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 12)

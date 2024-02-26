@@ -58,5 +58,5 @@ func (pr *paymentRequestHandler) AcknowldgeRequest(c *fiber.Ctx) error {
 	if err != nil {
 		return err
 	}
-	return c.JSON(responses.CreateResponse("Acknowldgement was successfully"))
+	return c.JSON(responses.CreateResponse("Acknowledgement was successfully"))
 }

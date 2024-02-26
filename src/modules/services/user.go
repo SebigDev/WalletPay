@@ -24,6 +24,8 @@ type IUserService interface {
 	GetPersonById(id string) (responses.PersonResponse, error)
 	GetAllUsers() ([]responses.PersonResponse, error)
 	AddPin(userId, pin string) error
+	ChangePassword(userId string, passReq dto.CreatePasswordChangeRequest) error
+	ChangePin(userId string, pinReq dto.CreatePinChangeRequest) error
 }
 
 type userService struct {
@@ -70,6 +72,40 @@ func (u *userService) AddPin(userId, pin string) error {
 	person.NewPin(pin)
 	err = u.UserRepository.UpdatePerson(person.MapToDao())
 	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *userService) ChangePassword(userId string, passReq dto.CreatePasswordChangeRequest) error {
+	person, err := u.UserRepository.GetUserById(userId)
+	if err != nil {
+		return err
+	}
+
+	if err := person.ChangePassword(passReq.OldPassword, passReq.NewPassword); err != nil {
+		return err
+	}
+
+	if err := u.UserRepository.UpdatePerson(person.MapToDao()); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (u *userService) ChangePin(userId string, pinReq dto.CreatePinChangeRequest) error {
+	person, err := u.UserRepository.GetUserById(userId)
+	if err != nil {
+		return err
+	}
+
+	if err := person.ChangePin(vo.Value(pinReq.OldPin), vo.Value(pinReq.NewPin)); err != nil {
+		return err
+	}
+
+	if err := u.UserRepository.UpdatePerson(person.MapToDao()); err != nil {
 		return err
 	}
 
