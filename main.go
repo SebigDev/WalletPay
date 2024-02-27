@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	_ "github.com/SebigDev/GoApp/docs"
-	"github.com/SebigDev/GoApp/infrastructures/db"
-	"github.com/SebigDev/GoApp/internal/routes"
+	_ "github.com/sebigdev/GoApp/docs"
+	"github.com/sebigdev/GoApp/infrastructures/db"
+	"github.com/sebigdev/GoApp/internal/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"

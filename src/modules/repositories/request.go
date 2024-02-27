@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/SebigDev/GoApp/src/modules/entities"
+	"github.com/sebigdev/GoApp/src/modules/entities"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"net/mail"
 
-	"github.com/SebigDev/GoApp/internal/utils"
+	"github.com/sebigdev/GoApp/internal/utils"
 )
 
 type EmailAddress struct {

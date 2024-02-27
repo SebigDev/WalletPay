@@ -1,4 +1,4 @@
-module github.com/SebigDev/GoApp
+module github.com/sebigdev/GoApp
 
 go 1.22.0
 

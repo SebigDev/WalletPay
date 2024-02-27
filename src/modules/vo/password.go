@@ -3,7 +3,7 @@ package vo
 import (
 	"fmt"
 
-	"github.com/SebigDev/GoApp/internal/utils"
+	"github.com/sebigdev/GoApp/internal/utils"
 
 	"golang.org/x/crypto/bcrypt"
 )

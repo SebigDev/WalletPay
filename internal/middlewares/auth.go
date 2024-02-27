@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/SebigDev/GoApp/internal/utils"
+	"github.com/sebigdev/GoApp/internal/utils"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"

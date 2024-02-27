@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"math/rand"
 
-	"github.com/SebigDev/GoApp/src/modules/daos"
-	r "github.com/SebigDev/GoApp/src/modules/responses"
-	"github.com/SebigDev/GoApp/src/modules/vo"
+	"github.com/sebigdev/GoApp/src/modules/daos"
+	r "github.com/sebigdev/GoApp/src/modules/responses"
+	"github.com/sebigdev/GoApp/src/modules/vo"
 )
 
 type WalletError struct {

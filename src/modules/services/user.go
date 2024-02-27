@@ -8,13 +8,13 @@ import (
 	"log"
 	"time"
 
-	"github.com/SebigDev/GoApp/config"
-	"github.com/SebigDev/GoApp/internal/utils"
-	"github.com/SebigDev/GoApp/src/modules/dto"
-	"github.com/SebigDev/GoApp/src/modules/entities"
-	"github.com/SebigDev/GoApp/src/modules/repositories"
-	"github.com/SebigDev/GoApp/src/modules/responses"
-	"github.com/SebigDev/GoApp/src/modules/vo"
+	"github.com/sebigdev/GoApp/config"
+	"github.com/sebigdev/GoApp/internal/utils"
+	"github.com/sebigdev/GoApp/src/modules/dto"
+	"github.com/sebigdev/GoApp/src/modules/entities"
+	"github.com/sebigdev/GoApp/src/modules/repositories"
+	"github.com/sebigdev/GoApp/src/modules/responses"
+	"github.com/sebigdev/GoApp/src/modules/vo"
 
 	"github.com/golang-jwt/jwt/v5"
 )

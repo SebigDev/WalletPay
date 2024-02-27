@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"github.com/SebigDev/GoApp/src/modules/dto"
-	"github.com/SebigDev/GoApp/src/modules/responses"
-	"github.com/SebigDev/GoApp/src/modules/services"
+	"github.com/sebigdev/GoApp/src/modules/dto"
+	"github.com/sebigdev/GoApp/src/modules/responses"
+	"github.com/sebigdev/GoApp/src/modules/services"
 
 	"time"
 

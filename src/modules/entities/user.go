@@ -3,7 +3,7 @@ package entities
 import (
 	"time"
 
-	"github.com/SebigDev/GoApp/src/modules/vo"
+	"github.com/sebigdev/GoApp/src/modules/vo"
 )
 
 type User struct {

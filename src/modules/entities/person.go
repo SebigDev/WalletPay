@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/SebigDev/GoApp/src/modules/daos"
-	"github.com/SebigDev/GoApp/src/modules/dto"
-	"github.com/SebigDev/GoApp/src/modules/responses"
-	"github.com/SebigDev/GoApp/src/modules/vo"
+	"github.com/sebigdev/GoApp/src/modules/daos"
+	"github.com/sebigdev/GoApp/src/modules/dto"
+	"github.com/sebigdev/GoApp/src/modules/responses"
+	"github.com/sebigdev/GoApp/src/modules/vo"
 
 	"github.com/google/uuid"
 )
