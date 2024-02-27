@@ -1,9 +1,9 @@
 package handlers
 
 import (
-	"CrashCourse/GoApp/src/modules/dto"
-	"CrashCourse/GoApp/src/modules/responses"
-	"CrashCourse/GoApp/src/modules/services"
+	"github.com/sebigdev/GoApp/src/modules/dto"
+	"github.com/sebigdev/GoApp/src/modules/responses"
+	"github.com/sebigdev/GoApp/src/modules/services"
 
 	"time"
 

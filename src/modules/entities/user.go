@@ -1,8 +1,9 @@
 package entities
 
 import (
-	"CrashCourse/GoApp/src/modules/vo"
 	"time"
+
+	"github.com/sebigdev/GoApp/src/modules/vo"
 )
 
 type User struct {

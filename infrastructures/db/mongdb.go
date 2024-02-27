@@ -1,10 +1,11 @@
 package db
 
 import (
-	"CrashCourse/GoApp/config"
 	"context"
 	"fmt"
 	"log"
+
+	"github.com/sebigdev/GoApp/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

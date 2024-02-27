@@ -1,10 +1,11 @@
 package main
 
 import (
-	_ "CrashCourse/GoApp/docs"
-	"CrashCourse/GoApp/infrastructures/db"
-	"CrashCourse/GoApp/internal/routes"
 	"log"
+
+	_ "github.com/sebigdev/GoApp/docs"
+	"github.com/sebigdev/GoApp/infrastructures/db"
+	"github.com/sebigdev/GoApp/internal/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -26,7 +27,7 @@ import (
 
 // @host localhost:3001
 // @BasePath /
-// @schemes http
+// @schemes http https
 func main() {
 	storeResponse := db.MongoInit()
 	app := fiber.New()

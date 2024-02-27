@@ -1,9 +1,10 @@
 package vo
 
 import (
-	"CrashCourse/GoApp/internal/utils"
 	"fmt"
 	"net/mail"
+
+	"github.com/sebigdev/GoApp/internal/utils"
 )
 
 type EmailAddress struct {

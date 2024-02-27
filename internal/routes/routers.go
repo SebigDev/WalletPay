@@ -1,11 +1,11 @@
 package routes
 
 import (
-	"CrashCourse/GoApp/infrastructures/db"
-	"CrashCourse/GoApp/internal/middlewares"
-	"CrashCourse/GoApp/src/handlers"
-	"CrashCourse/GoApp/src/modules/repositories"
-	"CrashCourse/GoApp/src/modules/services"
+	"github.com/sebigdev/GoApp/infrastructures/db"
+	"github.com/sebigdev/GoApp/internal/middlewares"
+	"github.com/sebigdev/GoApp/src/handlers"
+	"github.com/sebigdev/GoApp/src/modules/repositories"
+	"github.com/sebigdev/GoApp/src/modules/services"
 
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"

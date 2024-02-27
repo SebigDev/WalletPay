@@ -1,10 +1,11 @@
 package repositories
 
 import (
-	"CrashCourse/GoApp/src/modules/entities"
 	"context"
 	"fmt"
 	"log"
+
+	"github.com/sebigdev/GoApp/src/modules/entities"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"

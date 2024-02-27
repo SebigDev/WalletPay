@@ -1,11 +1,12 @@
 package handlers
 
 import (
-	"CrashCourse/GoApp/internal/utils"
-	"CrashCourse/GoApp/src/modules/dto"
-	"CrashCourse/GoApp/src/modules/responses"
-	"CrashCourse/GoApp/src/modules/services"
 	"log"
+
+	"github.com/sebigdev/GoApp/internal/utils"
+	"github.com/sebigdev/GoApp/src/modules/dto"
+	"github.com/sebigdev/GoApp/src/modules/responses"
+	"github.com/sebigdev/GoApp/src/modules/services"
 
 	"github.com/gofiber/fiber/v2"
 )

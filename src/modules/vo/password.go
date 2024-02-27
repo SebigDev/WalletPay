@@ -1,8 +1,9 @@
 package vo
 
 import (
-	"CrashCourse/GoApp/internal/utils"
 	"fmt"
+
+	"github.com/sebigdev/GoApp/internal/utils"
 
 	"golang.org/x/crypto/bcrypt"
 )

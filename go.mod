@@ -1,4 +1,4 @@
-module CrashCourse/GoApp
+module github.com/sebigdev/GoApp
 
 go 1.22.0
 

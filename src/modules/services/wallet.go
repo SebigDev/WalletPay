@@ -1,11 +1,12 @@
 package services
 
 import (
-	"CrashCourse/GoApp/src/modules/dto"
-	"CrashCourse/GoApp/src/modules/entities"
-	"CrashCourse/GoApp/src/modules/repositories"
-	"CrashCourse/GoApp/src/modules/vo"
 	"fmt"
+
+	"github.com/sebigdev/GoApp/src/modules/dto"
+	"github.com/sebigdev/GoApp/src/modules/entities"
+	"github.com/sebigdev/GoApp/src/modules/repositories"
+	"github.com/sebigdev/GoApp/src/modules/vo"
 )
 
 type IWalletService interface {
@@ -43,7 +44,7 @@ func (ws *walletService) AddWallet(userId, currency string) error {
 		return err
 	}
 
-	money := entities.NewMoney(amount, curr)
+	money := vo.NewMoney(amount, curr)
 	newWallet := entities.NewWallet(owner, *money)
 
 	for _, wa := range *person.GetWallets() {
@@ -82,7 +83,7 @@ func (ws *walletService) Deposit(userId string, depositReq dto.DepositRequest) e
 		return err
 	}
 
-	money := entities.NewMoney(amount, currency)
+	money := vo.NewMoney(amount, currency)
 	if err := person.Deposit(*money, walletNumber); err != nil {
 		return err
 	}
@@ -116,7 +117,7 @@ func (ws *walletService) Withdraw(userId string, withdrawReq dto.WithdrawRequest
 		return err
 	}
 
-	money := entities.NewMoney(amount, currency)
+	money := vo.NewMoney(amount, currency)
 	if err := person.Withdraw(*money, walletNumber); err != nil {
 		return err
 	}
