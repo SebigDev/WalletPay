@@ -1,12 +1,13 @@
 package entities
 
 import (
-	"CrashCourse/GoApp/src/modules/daos"
-	"CrashCourse/GoApp/src/modules/dto"
-	"CrashCourse/GoApp/src/modules/responses"
-	"CrashCourse/GoApp/src/modules/vo"
 	"fmt"
 	"time"
+
+	"github.com/SebigDev/GoApp/src/modules/daos"
+	"github.com/SebigDev/GoApp/src/modules/dto"
+	"github.com/SebigDev/GoApp/src/modules/responses"
+	"github.com/SebigDev/GoApp/src/modules/vo"
 
 	"github.com/google/uuid"
 )
@@ -22,7 +23,7 @@ type Person struct {
 
 func NewPerson(p dto.CreatePerson) (*Person, error) {
 	agg := &UserAggregate{
-		UserId: uuid.New().String(),
+		UserId: uuid.NewString(),
 	}
 	emailAddress, err := vo.CreateEmailAddress(p.EmailAddress)
 	if err != nil {
@@ -118,7 +119,7 @@ func MapToResponse(d *Person) responses.PersonResponse {
 	}
 }
 
-func (p *Person) Deposit(money Money, walletNumber vo.WalletNumber) error {
+func (p *Person) Deposit(money vo.Money, walletNumber vo.WalletNumber) error {
 	if !p.HasWallets() {
 		return fmt.Errorf("oops!!! user has no wallets")
 	}
@@ -132,7 +133,7 @@ func (p *Person) Deposit(money Money, walletNumber vo.WalletNumber) error {
 	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNumber)
 }
 
-func (p *Person) Withdraw(money Money, walletNumber vo.WalletNumber) error {
+func (p *Person) Withdraw(money vo.Money, walletNumber vo.WalletNumber) error {
 	if !p.HasWallets() {
 		return fmt.Errorf("oops!!! user has no wallets")
 	}
@@ -149,8 +150,32 @@ func (p *Person) Withdraw(money Money, walletNumber vo.WalletNumber) error {
 	return fmt.Errorf("you have provided an invalid wallet address: %s", walletNumber)
 }
 
+func (p *Person) ChangePassword(oldPass, newPass string) error {
+	if err := vo.VerifyPassword(oldPass, p.user.Password.Value); err != nil {
+		return err
+	}
+	password, err := vo.CreatePassword(newPass)
+	if err != nil {
+		return err
+	}
+	p.user.Password = password
+	return nil
+}
+
+func (p *Person) ChangePin(oldPin, newPin vo.PinValue) error {
+	if err := vo.Verify(oldPin.String(), p.user.Pin); err != nil {
+		return err
+	}
+	nPin, err := vo.NewPinValue(newPin.String())
+	if err != nil {
+		return err
+	}
+	p.user.Pin = *vo.NewPin(nPin)
+	return nil
+}
+
 func (p *Person) NewPin(pin string) {
-	p.user.Pin = *vo.NewPin(vo.Value(pin))
+	p.user.Pin = *vo.NewPin(vo.PinValue(pin))
 }
 
 func (p *Person) VerifyPassword(password string) error {
@@ -187,28 +212,4 @@ func (p *Person) IsNotNil() bool {
 
 func (p *Person) GetWallets() *[]Wallet {
 	return &p.wallets
-}
-
-func (p *Person) ChangePassword(oldPass, newPass string) error {
-	if err := vo.VerifyPassword(oldPass, p.user.Password.Value); err != nil {
-		return err
-	}
-	password, err := vo.CreatePassword(newPass)
-	if err != nil {
-		return err
-	}
-	p.user.Password = password
-	return nil
-}
-
-func (p *Person) ChangePin(oldPin, newPin vo.Value) error {
-	if err := vo.Verify(oldPin.String(), p.user.Pin); err != nil {
-		return err
-	}
-	nPin, err := vo.NewValue(newPin.String())
-	if err != nil {
-		return err
-	}
-	p.user.Pin = *vo.NewPin(nPin)
-	return nil
 }

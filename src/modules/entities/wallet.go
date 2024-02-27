@@ -1,11 +1,12 @@
 package entities
 
 import (
-	"CrashCourse/GoApp/src/modules/daos"
-	r "CrashCourse/GoApp/src/modules/responses"
-	"CrashCourse/GoApp/src/modules/vo"
 	"fmt"
 	"math/rand"
+
+	"github.com/SebigDev/GoApp/src/modules/daos"
+	r "github.com/SebigDev/GoApp/src/modules/responses"
+	"github.com/SebigDev/GoApp/src/modules/vo"
 )
 
 type WalletError struct {
@@ -18,11 +19,6 @@ func (e WalletError) Error() string {
 
 type WalletType string
 
-type Money struct {
-	Amount   vo.Amount
-	Currency vo.Currency
-}
-
 const (
 	Private  WalletType = "Private"
 	Business WalletType = "Business"
@@ -30,35 +26,28 @@ const (
 
 type Wallet struct {
 	Number  string
-	Money   Money
+	Money   vo.Money
 	OwnerID vo.Owner
 	Type    WalletType
 }
 
-func NewMoney(amount vo.Amount, currency vo.Currency) *Money {
-	return &Money{
-		Amount:   amount,
-		Currency: currency,
-	}
-}
-
-func NewWallet(owner vo.Owner, money Money) *Wallet {
+func NewWallet(owner vo.Owner, money vo.Money) *Wallet {
 	return &Wallet{
 		Number:  generateWalletNumber(),
 		OwnerID: owner,
 		Type:    Private,
-		Money: Money{
+		Money: vo.Money{
 			Amount:   money.Amount,
 			Currency: money.Currency,
 		},
 	}
 }
 
-func (w *Wallet) Deposit(money Money) {
+func (w *Wallet) Deposit(money vo.Money) {
 	w.Money.Amount += money.Amount
 }
 
-func (w *Wallet) Withdraw(money Money) {
+func (w *Wallet) Withdraw(money vo.Money) {
 	w.Money.Amount -= money.Amount
 }
 
@@ -99,7 +88,7 @@ func FromDao(wallets []daos.WalletDao) *[]Wallet {
 		res = append(res, Wallet{
 			Number:  wallet.Number,
 			OwnerID: vo.Owner(wallet.Owner),
-			Money: Money{
+			Money: vo.Money{
 				Amount:   vo.Amount(wallet.Amount.Value),
 				Currency: vo.Currency(wallet.Amount.Currency),
 			},

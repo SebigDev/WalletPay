@@ -1,12 +1,13 @@
 package utils
 
 import (
-	"CrashCourse/GoApp/config"
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
 	"log"
 	"strings"
+
+	"github.com/SebigDev/GoApp/config"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"

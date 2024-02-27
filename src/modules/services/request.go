@@ -1,10 +1,10 @@
 package services
 
 import (
-	"CrashCourse/GoApp/src/modules/dto"
-	"CrashCourse/GoApp/src/modules/entities"
-	"CrashCourse/GoApp/src/modules/repositories"
-	"CrashCourse/GoApp/src/modules/vo"
+	"github.com/SebigDev/GoApp/src/modules/dto"
+	"github.com/SebigDev/GoApp/src/modules/entities"
+	"github.com/SebigDev/GoApp/src/modules/repositories"
+	"github.com/SebigDev/GoApp/src/modules/vo"
 )
 
 type IPaymentRequestService interface {

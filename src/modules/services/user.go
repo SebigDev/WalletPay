@@ -1,19 +1,20 @@
 package services
 
 import (
-	"CrashCourse/GoApp/config"
-	"CrashCourse/GoApp/internal/utils"
-	"CrashCourse/GoApp/src/modules/dto"
-	"CrashCourse/GoApp/src/modules/entities"
-	"CrashCourse/GoApp/src/modules/repositories"
-	"CrashCourse/GoApp/src/modules/responses"
-	"CrashCourse/GoApp/src/modules/vo"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"fmt"
 	"log"
 	"time"
+
+	"github.com/SebigDev/GoApp/config"
+	"github.com/SebigDev/GoApp/internal/utils"
+	"github.com/SebigDev/GoApp/src/modules/dto"
+	"github.com/SebigDev/GoApp/src/modules/entities"
+	"github.com/SebigDev/GoApp/src/modules/repositories"
+	"github.com/SebigDev/GoApp/src/modules/responses"
+	"github.com/SebigDev/GoApp/src/modules/vo"
 
 	"github.com/golang-jwt/jwt/v5"
 )
@@ -45,7 +46,7 @@ func (u *userService) CreateNewPerson(data dto.CreatePerson) error {
 	if err != nil {
 		return err
 	}
-	pin, err := vo.NewValue(data.Pin)
+	pin, err := vo.NewPinValue(data.Pin)
 	if err != nil {
 		return err
 	}
@@ -101,7 +102,7 @@ func (u *userService) ChangePin(userId string, pinReq dto.CreatePinChangeRequest
 		return err
 	}
 
-	if err := person.ChangePin(vo.Value(pinReq.OldPin), vo.Value(pinReq.NewPin)); err != nil {
+	if err := person.ChangePin(vo.PinValue(pinReq.OldPin), vo.PinValue(pinReq.NewPin)); err != nil {
 		return err
 	}
 

@@ -1,11 +1,12 @@
 package entities
 
 import (
-	"CrashCourse/GoApp/src/modules/daos"
-	"CrashCourse/GoApp/src/modules/responses"
-	"CrashCourse/GoApp/src/modules/vo"
 	"fmt"
 	"time"
+
+	"github.com/SebigDev/GoApp/src/modules/daos"
+	"github.com/SebigDev/GoApp/src/modules/responses"
+	"github.com/SebigDev/GoApp/src/modules/vo"
 
 	"github.com/google/uuid"
 )
@@ -59,7 +60,7 @@ func (ln *LegalName) String() string {
 	return fmt.Sprintf("%s %s", ln.FirstName, ln.LastName)
 }
 
-func NewBeneficiary(wallet vo.WalletNumber, money Money, name vo.CreditorName) *Beneficiary {
+func NewBeneficiary(wallet vo.WalletNumber, money vo.Money, name vo.CreditorName) *Beneficiary {
 	return &Beneficiary{
 		Wallet:    wallet.String(),
 		PayAmount: float64(money.Amount),
@@ -68,7 +69,7 @@ func NewBeneficiary(wallet vo.WalletNumber, money Money, name vo.CreditorName) *
 	}
 }
 
-func NewDebitor(person *Person, wallet vo.WalletNumber, money Money) *Debitor {
+func NewDebitor(person *Person, wallet vo.WalletNumber, money vo.Money) *Debitor {
 	p := LegalName{person.user.FirstName, person.user.LastName}
 	return &Debitor{
 		Wallet:    wallet.String(),
@@ -85,7 +86,7 @@ func NewTransaction(from Debitor, to Beneficiary, purpose string) *Transaction {
 		From:        from,
 		Description: purpose,
 		CreatedAt:   time.Now().UTC(),
-		ID:          uuid.New().String(),
+		ID:          uuid.NewString(),
 		PaymentRef:  fmt.Sprintf("TXRef%d", time.Now().UTC().UnixMilli()),
 		TxCurrency:  to.Currency,
 	}

@@ -1,8 +1,9 @@
 package vo
 
 import (
-	"CrashCourse/GoApp/internal/utils"
 	"fmt"
+
+	"github.com/SebigDev/GoApp/internal/utils"
 
 	"github.com/google/uuid"
 )
@@ -15,20 +16,20 @@ func (e PinError) Error() string {
 	return fmt.Sprintf(e.ErrorMsg)
 }
 
-type Value string
+type PinValue string
 
-func (p *Value) String() string {
+func (p *PinValue) String() string {
 	return string(*p)
 }
 
-func NewValue(val string) (Value, error) {
+func NewPinValue(val string) (PinValue, error) {
 	if utils.Length(val) == 0 {
 		return "", PinError{ErrorMsg: "Pin value must be provided"}
 	}
 	if utils.Length(val) < 4 || utils.Length(val) > 4 {
 		return "", PinError{ErrorMsg: "Pin value must have a length of 4"}
 	}
-	return Value(val), nil
+	return PinValue(val), nil
 }
 
 type Pin struct {
@@ -36,7 +37,7 @@ type Pin struct {
 	RecoverValue string
 }
 
-func NewPin(pin Value) *Pin {
+func NewPin(pin PinValue) *Pin {
 	return &Pin{
 		HashValue:    []byte(pin),
 		RecoverValue: uuid.NewString(),
@@ -45,7 +46,7 @@ func NewPin(pin Value) *Pin {
 
 func Verify(pin string, p Pin) error {
 	savedPin := string(p.HashValue)
-	cleanPin, err := NewValue(pin)
+	cleanPin, err := NewPinValue(pin)
 	if err != nil {
 		return err
 	}

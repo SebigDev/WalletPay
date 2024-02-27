@@ -1,11 +1,11 @@
 package services
 
 import (
-	"CrashCourse/GoApp/src/modules/dto"
-	"CrashCourse/GoApp/src/modules/entities"
-	"CrashCourse/GoApp/src/modules/repositories"
-	"CrashCourse/GoApp/src/modules/responses"
-	"CrashCourse/GoApp/src/modules/vo"
+	"github.com/SebigDev/GoApp/src/modules/dto"
+	"github.com/SebigDev/GoApp/src/modules/entities"
+	"github.com/SebigDev/GoApp/src/modules/repositories"
+	"github.com/SebigDev/GoApp/src/modules/responses"
+	"github.com/SebigDev/GoApp/src/modules/vo"
 )
 
 type ITransactionService interface {
@@ -60,8 +60,8 @@ func (ts *TransactionService) Submit(userId string, trx dto.CreateTransaction) (
 	}
 
 	convertedMoney := vo.NewMoneyConverted(amount, toCurr, fromCurr)
-	toMoney := entities.NewMoney(vo.Amount(convertedMoney), toCurr)
-	fromMoney := entities.NewMoney(amount, fromCurr)
+	toMoney := vo.NewMoney(vo.Amount(convertedMoney), toCurr)
+	fromMoney := vo.NewMoney(amount, fromCurr)
 
 	//CLEANED UP TRANSACTION OBJECTS
 	beneficiary := entities.NewBeneficiary(toWallet, *toMoney, creditorName)

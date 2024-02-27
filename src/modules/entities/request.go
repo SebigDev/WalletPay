@@ -1,7 +1,7 @@
 package entities
 
 import (
-	"CrashCourse/GoApp/src/modules/vo"
+	"github.com/SebigDev/GoApp/src/modules/vo"
 
 	"github.com/google/uuid"
 )
