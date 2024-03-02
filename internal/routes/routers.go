@@ -1,27 +1,32 @@
 package routes
 
 import (
-	"github.com/sebigdev/GoApp/infrastructures/db"
-	"github.com/sebigdev/GoApp/internal/middlewares"
-	"github.com/sebigdev/GoApp/src/handlers"
-	"github.com/sebigdev/GoApp/src/modules/repositories"
-	"github.com/sebigdev/GoApp/src/modules/services"
+	"github.com/sebigdev/walletpay/handlers"
+	"github.com/sebigdev/walletpay/infrastructures/db"
+	"github.com/sebigdev/walletpay/internal/middlewares"
+	"github.com/sebigdev/walletpay/modules/repositories"
+	"github.com/sebigdev/walletpay/modules/services"
 
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
 )
 
 var authMiddleware *middlewares.AuthMiddleware
+var oContext *middlewares.OperationContext
 
 func MapCommon(app *fiber.App, store *db.MongoResponse) {
+
+	//SET OPERATION CONTEXT
+	oContext.SetXRequestIDContext(app)
+	oContext.LivenessAndHealthCheck(app)
 
 	//INITIATE EVENT BUS
 	eventBus := services.NewEventBus()
 
 	//COLLECTION
-	userCollection := store.ClientR.Database("goapp").Collection("users")
-	trxCollection := store.ClientR.Database("goapp").Collection("transactions")
-	payReqCollection := store.ClientR.Database("goapp").Collection("payments")
+	userCollection := store.ClientR.Database("walletpay").Collection("users")
+	trxCollection := store.ClientR.Database("walletpay").Collection("transactions")
+	payReqCollection := store.ClientR.Database("walletpay").Collection("payments")
 
 	//REPOSITORIES
 	userRepository := repositories.NewUserRepository(userCollection, store.CtxR)

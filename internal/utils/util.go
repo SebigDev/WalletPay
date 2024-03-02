@@ -7,7 +7,7 @@ import (
 	"log"
 	"strings"
 
-	"github.com/sebigdev/GoApp/config"
+	"github.com/sebigdev/walletpay/config"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"

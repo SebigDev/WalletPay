@@ -4,8 +4,8 @@
     ],
     "swagger": "2.0",
     "info": {
-        "description": "This is a GoApp project.",
-        "title": "GoApp Wallet API",
+        "description": "This is a walletpay project.",
+        "title": "walletpay Wallet API",
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",

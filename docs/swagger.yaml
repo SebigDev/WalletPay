@@ -162,12 +162,12 @@ info:
     email: support@swagger.io
     name: API Support
     url: http://www.swagger.io/support
-  description: This is a GoApp project.
+  description: This is a walletpay project.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: GoApp Wallet API
+  title: walletpay Wallet API
   version: "2.0"
 paths:
   /api/v1/auth/login:
