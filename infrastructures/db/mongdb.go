@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/sebigdev/GoApp/config"
+	"github.com/sebigdev/walletpay/config"
 
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"

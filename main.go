@@ -3,9 +3,9 @@ package main
 import (
 	"log"
 
-	_ "github.com/sebigdev/GoApp/docs"
-	"github.com/sebigdev/GoApp/infrastructures/db"
-	"github.com/sebigdev/GoApp/internal/routes"
+	_ "github.com/sebigdev/walletpay/docs"
+	"github.com/sebigdev/walletpay/infrastructures/db"
+	"github.com/sebigdev/walletpay/internal/routes"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
@@ -13,9 +13,9 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-// @title GoApp Wallet API
+// @title walletpay Wallet API
 // @version 2.0
-// @description This is a GoApp project.
+// @description This is a walletpay project.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support

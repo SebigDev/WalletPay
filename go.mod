@@ -1,4 +1,4 @@
-module github.com/sebigdev/GoApp
+module github.com/sebigdev/walletpay
 
 go 1.22.0
 

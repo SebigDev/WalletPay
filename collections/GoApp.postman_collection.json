@@ -1,7 +1,7 @@
 {
 	"info": {
 		"_postman_id": "9900b208-8db0-4649-90d3-fb192ed774a0",
-		"name": "GoApp",
+		"name": "walletpay",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "2456941"
 	},
@@ -226,7 +226,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "\n{\n    \"walletNo\": \"NL03GOAPP44747491\",\n    \"amount\" : 23.98,\n    \"currency\": \"EUR\"\n}",
+					"raw": "\n{\n    \"walletNo\": \"NL03walletpay44747491\",\n    \"amount\" : 23.98,\n    \"currency\": \"EUR\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -322,7 +322,7 @@
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"creditorWallet\":\"NL03GOAPP44747491\",\n    \"amount\" : 500,\n    \"currency\": \"EUR\",\n    \"requestPartyId\":\"be8c879a-f04d-41ea-8475-e34bbba71280\",\n    \"pin\":\"0419\"\n}",
+					"raw": "{\n    \"creditorWallet\":\"NL03walletpay44747491\",\n    \"amount\" : 500,\n    \"currency\": \"EUR\",\n    \"requestPartyId\":\"be8c879a-f04d-41ea-8475-e34bbba71280\",\n    \"pin\":\"0419\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -417,7 +417,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n  \"amount\": 50,\n  \"creditorCurrency\": \"GBP\",\n  \"creditorName\": \"Chooks\",\n  \"creditorWalletAddress\": \"NL05GOAPP02713393\",\n  \"debitorCurrency\": \"EUR\",\n  \"debitorWalletAddress\": \"NL03GOAPP44747491\",\n  \"description\": \"Testing transaction\",\n  \"pin\" : \"0000\"\n}",
+					"raw": "{\n  \"amount\": 50,\n  \"creditorCurrency\": \"GBP\",\n  \"creditorName\": \"Chooks\",\n  \"creditorWalletAddress\": \"NL05walletpay02713393\",\n  \"debitorCurrency\": \"EUR\",\n  \"debitorWalletAddress\": \"NL03walletpay44747491\",\n  \"description\": \"Testing transaction\",\n  \"pin\" : \"0000\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -462,7 +462,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"walletNo\": \"NL03GOAPP44747491\",\n    \"amount\" : 50,\n    \"currency\": \"EUR\"\n}",
+					"raw": "{\n    \"walletNo\": \"NL03walletpay44747491\",\n    \"amount\" : 50,\n    \"currency\": \"EUR\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
