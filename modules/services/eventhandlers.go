@@ -3,15 +3,18 @@ package services
 import (
 	"log"
 	"time"
+
+	"github.com/sebigdev/walletpay/modules/entities"
 )
 
 var (
-	WalletCreated string = "WalletCreated"
-	PinCreated    string = "PinCreated"
+	WalletCreated      string = "WalletCreated"
+	PinCreated         string = "PinCreated"
+	TransactionCreated string = "TransactionCreated"
 )
 
 type IEvent interface {
-	WalletCreatedEvent | PinCreatedEvent
+	WalletCreatedEvent | PinCreatedEvent | entities.Transaction
 }
 
 type WalletCreatedEvent struct {
@@ -24,6 +27,17 @@ type PinCreatedEvent struct {
 	Pin    string
 }
 
+type TransactionEvent struct {
+	AmountCredited    float64
+	Currency          string
+	DateOfTransaction time.Time
+	Receiver          string
+	Sender            string
+	Direction         string
+	SenderId          string
+	ReceiverId        string
+}
+
 func ToEvent[T IEvent](event T, topic string) *Event {
 	return &Event{
 		Data:      event,
@@ -33,24 +47,27 @@ func ToEvent[T IEvent](event T, topic string) *Event {
 }
 
 type IEventHandler interface {
-	WalletCreatedHandler(event <-chan Event)
+	WalletCreatedHandler(eventData <-chan Event)
 	PinCreatedHandler(eventData <-chan Event)
+	NotifyTransactionHandler(eventData <-chan Event)
 }
 
 type eventHandler struct {
-	WalletService IWalletService
-	UserService   IUserService
+	WalletService      IWalletService
+	UserService        IUserService
+	TransactionService ITransactionService
 }
 
-func NewEventHandler(walletService IWalletService, userService IUserService) IEventHandler {
+func NewEventHandler(walletService IWalletService, userService IUserService, trxService ITransactionService) IEventHandler {
 	return &eventHandler{
-		UserService:   userService,
-		WalletService: walletService,
+		UserService:        userService,
+		WalletService:      walletService,
+		TransactionService: trxService,
 	}
 }
 
 func (e *eventHandler) WalletCreatedHandler(eventData <-chan Event) {
-	log.Println("Wallet created event listening...")
+	log.Println("WalletCreatedHandler event listening...")
 	for event := range eventData {
 		data, ok := event.Data.(WalletCreatedEvent)
 		if !ok {
@@ -67,7 +84,7 @@ func (e *eventHandler) WalletCreatedHandler(eventData <-chan Event) {
 }
 
 func (e *eventHandler) PinCreatedHandler(eventData <-chan Event) {
-	log.Println("Pin created event listening...")
+	log.Println("PinCreatedHandler event listening...")
 	for event := range eventData {
 		data, ok := event.Data.(PinCreatedEvent)
 		if !ok {
@@ -81,5 +98,23 @@ func (e *eventHandler) PinCreatedHandler(eventData <-chan Event) {
 
 		log.Println("Pin created successfully...")
 
+	}
+}
+
+func (e *eventHandler) NotifyTransactionHandler(eventData <-chan Event) {
+	log.Println("NotifyTransactionHandler event listening...")
+	for event := range eventData {
+		data, ok := event.Data.(entities.Transaction)
+		if !ok {
+			log.Println("Invalid event")
+			continue
+		}
+		log.Printf("TransactionEvent : %+v", data)
+		resp, err := e.TransactionService.SubmitTransaction(&data)
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		log.Printf("Response: %+v", resp)
 	}
 }

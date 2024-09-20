@@ -5,6 +5,7 @@ import (
 	"errors"
 	"log"
 
+	"github.com/sebigdev/walletpay/internal/utils"
 	"github.com/sebigdev/walletpay/modules/daos"
 	"github.com/sebigdev/walletpay/modules/entities"
 
@@ -20,6 +21,7 @@ type IUserRepository interface {
 	GetUserById(id string) (*entities.Person, error)
 	GetUsers() (*[]entities.Person, error)
 	UpdatePerson(person daos.PersonDao) error
+	GetWalletOwner(walletNumber string) (*entities.Person, error)
 }
 
 type userRepository struct {
@@ -118,4 +120,22 @@ func (u *userRepository) UpdatePerson(person daos.PersonDao) error {
 		log.Fatal(err)
 	}
 	return nil
+}
+
+func (u *userRepository) GetWalletOwner(walletNumber string) (*entities.Person, error) {
+	var dao daos.PersonDao
+	filter := bson.M{
+		"wallets.number": bson.M{
+			"$in": utils.ToStringArray(walletNumber),
+		}}
+	err := u.collection.FindOne(u.ctx, filter).Decode(&dao)
+
+	if err != nil {
+		if err.Error() == MongoNoDocumentError {
+			return &entities.Person{}, nil
+		}
+		return &entities.Person{}, err
+	}
+	owner := entities.MapFromDao(&dao)
+	return &owner, nil
 }

@@ -39,7 +39,7 @@ func (pr *paymentRequestHandler) SendRequest(c *fiber.Ctx) error {
 	}
 	resp, err := pr.paymentRequestService.Request(userId, *createPayRequest)
 	if err != nil {
-		return err
+		return c.Status(400).JSON(responses.CreateErrorResponse(err.Error()))
 	}
 	return c.JSON(responses.CreateResponse(resp))
 }
@@ -57,7 +57,7 @@ func (pr *paymentRequestHandler) AcknowldgeRequest(c *fiber.Ctx) error {
 	}
 	err = pr.paymentRequestService.AcknowledgeRequest(userId, ackRequest.RequestId)
 	if err != nil {
-		return err
+		return c.Status(400).JSON(responses.CreateErrorResponse(err.Error()))
 	}
 	return c.JSON(responses.CreateResponse("Acknowledgement was successfully"))
 }

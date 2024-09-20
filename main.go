@@ -13,6 +13,8 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
+const DefaultFormat string = "${time} | ${status} | ${latency} | ${locals:requestid} | ${ip} | ${method} | ${path} | ${error}\n"
+
 // @title walletpay Wallet API
 // @version 2.0
 // @description This is a walletpay project.
@@ -29,11 +31,13 @@ import (
 // @BasePath /
 // @schemes http https
 func main() {
-	storeResponse := db.MongoInit()
+	props := db.Init()
 	app := fiber.New()
-	app.Use(logger.New())
+	app.Use(logger.New(logger.Config{
+		Format: DefaultFormat,
+	}))
 	app.Use(recover.New())
-	routes.MapCommon(app, &storeResponse)
+	routes.Init(app, props)
 
 	app.Use(cors.New(cors.Config{
 		AllowOrigins: "*",
@@ -46,5 +50,4 @@ func main() {
 		log.Fatal("An error has occurred while starting the server")
 		return
 	}
-	log.Println("Server running on port", 3000)
 }

@@ -4,13 +4,14 @@ import "time"
 
 type TransactionDao struct {
 	ID                   string    `bson:"id"`
-	Beneficiary          ToDao     `bson:"benficiary"`
-	Originator           FromDao   `bson:"originator"`
+	ReceiverAccount      ToDao     `bson:"receiverAccount"`
+	SenderAccount        FromDao   `bson:"senderAccount"`
 	Amount               float64   `bson:"amount"`
 	Currency             string    `bson:"currency"`
 	Description          string    `bson:"description"`
 	CreatedAt            time.Time `bson:"createdAt"`
-	UserId               string    `bson:"userId"`
+	Sender               string    `bson:"sender"`
+	Receiver             string    `bson:"receiver"`
 	TransactionReference string    `bson:"transactionReference"`
 }
 

@@ -33,9 +33,14 @@ type Amount struct {
 	Currency string  `json:"currency"`
 }
 
-type TransactionResponse struct {
+type TransactionResponse2 struct {
 	TransactionId        string `json:"transactionID"`
 	TransactionReference string `json:"transactionReference"`
+}
+
+type TransactionResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
 }
 
 type TransactionFullResponse struct {
@@ -50,5 +55,7 @@ type TransactionFullResponse struct {
 	Amount               float64   `json:"amount"`
 	Description          string    `json:"description"`
 	CreatedAt            time.Time `json:"createdAt"`
-	UserId               string    `json:"userId"`
+	Sender               string    `json:"sender"`
+	Receiver             string    `json:"receiver"`
+	Direction            string    `json:"direction"`
 }

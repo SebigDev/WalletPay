@@ -16,7 +16,7 @@ type EmailAddressError struct {
 }
 
 func (e EmailAddressError) Error() string {
-	return fmt.Sprintln(e.ErrorMsg)
+	return fmt.Sprintf(e.ErrorMsg)
 }
 
 func CreateEmailAddress(emailAddress string) (*EmailAddress, error) {
@@ -28,13 +28,9 @@ func CreateEmailAddress(emailAddress string) (*EmailAddress, error) {
 
 		return &EmailAddress{}, EmailAddressError{ErrorMsg: "You have provided an invalid email address"}
 	}
-	return newEmailAddress(emailAddress), nil
-}
-
-func newEmailAddress(emailAddress string) *EmailAddress {
 	return &EmailAddress{
 		Value: emailAddress,
-	}
+	}, nil
 }
 
 func validateEmail(emailAddress string) bool {

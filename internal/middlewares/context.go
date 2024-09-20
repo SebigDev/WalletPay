@@ -1,6 +1,9 @@
 package middlewares
 
 import (
+	"context"
+	"time"
+
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/healthcheck"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
@@ -33,4 +36,14 @@ func (*OperationContext) LivenessAndHealthCheck(app *fiber.App) {
 		},
 		ReadinessEndpoint: "/ready",
 	}))
+}
+
+func HandleTimeOutFunc(ctx *fiber.Ctx) error {
+	c, cancel := context.WithTimeout(ctx.Context(), 100*time.Millisecond)
+	defer cancel()
+
+	for {
+		<-c.Done()
+		return fiber.NewError(fiber.StatusRequestTimeout, "operation timed out")
+	}
 }
