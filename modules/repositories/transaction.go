@@ -39,7 +39,13 @@ func (tx *transactionRepository) Submit(trx *entities.Transaction) error {
 }
 
 func (tx *transactionRepository) GetTransaction(userId string) (*[]daos.TransactionDao, error) {
-	cursor, err := tx.collection.Find(tx.context, bson.M{"userId": userId})
+	filter := bson.M{
+		"$or": []bson.M{
+			{"receiver": userId},
+			{"sender": userId},
+		},
+	}
+	cursor, err := tx.collection.Find(tx.context, filter)
 	if err != nil {
 		log.Fatal(err)
 	}

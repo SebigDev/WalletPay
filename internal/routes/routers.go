@@ -1,6 +1,8 @@
 package routes
 
 import (
+	"time"
+
 	"github.com/sebigdev/walletpay/handlers"
 	"github.com/sebigdev/walletpay/infrastructures/db"
 	"github.com/sebigdev/walletpay/internal/middlewares"
@@ -9,12 +11,13 @@ import (
 
 	swagger "github.com/arsmn/fiber-swagger/v2"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/monitor"
 )
 
 var authMiddleware *middlewares.AuthMiddleware
 var oContext *middlewares.OperationContext
 
-func MapCommon(app *fiber.App, store *db.MongoResponse) {
+func Init(app *fiber.App, props *db.DbProps) {
 
 	//SET OPERATION CONTEXT
 	oContext.SetXRequestIDContext(app)
@@ -23,20 +26,15 @@ func MapCommon(app *fiber.App, store *db.MongoResponse) {
 	//INITIATE EVENT BUS
 	eventBus := services.NewEventBus()
 
-	//COLLECTION
-	userCollection := store.ClientR.Database("walletpay").Collection("users")
-	trxCollection := store.ClientR.Database("walletpay").Collection("transactions")
-	payReqCollection := store.ClientR.Database("walletpay").Collection("payments")
-
 	//REPOSITORIES
-	userRepository := repositories.NewUserRepository(userCollection, store.CtxR)
-	trxRepository := repositories.NewTransactionRepository(trxCollection, store.CtxR)
-	payReqRepository := repositories.NewPaymentRequestRepository(payReqCollection, store.CtxR)
+	userRepository := repositories.NewUserRepository(props.UserCollection, props.Context)
+	trxRepository := repositories.NewTransactionRepository(props.TransactionCollection, props.Context)
+	payReqRepository := repositories.NewPaymentRequestRepository(props.PaymentCollection, props.Context)
 
 	//SERVICES
 	userService := services.NewUserService(userRepository, eventBus)
 	walletService := services.NewWalletService(userRepository)
-	trxService := services.NewTransactionService(trxRepository, userRepository)
+	trxService := services.NewTransactionService(trxRepository, userRepository, eventBus)
 	payReqService := services.NewPaymentRequestService(payReqRepository, userRepository)
 
 	//HANDLERS
@@ -54,6 +52,7 @@ func MapCommon(app *fiber.App, store *db.MongoResponse) {
 
 	//swagger routes
 	app.Get("/swagger/*", swagger.HandlerDefault)
+	app.Get("/metrics", monitor.New(monitor.Config{Title: "WalletPay Metrics", Refresh: time.Hour}))
 
 	//Authenticated routes
 	v1.Get("/user", authMiddleware.UserAuthMiddlewareHandler, userHandler.GetPersonById)
@@ -72,9 +71,10 @@ func MapCommon(app *fiber.App, store *db.MongoResponse) {
 	v1.Post("/request", authMiddleware.UserAuthMiddlewareHandler, payReqHandler.SendRequest)
 	v1.Post("/request/acknowledge", authMiddleware.UserAuthMiddlewareHandler, payReqHandler.AcknowldgeRequest)
 
-	//SRTVICES FOREVENT BUS
+	//SRTVICES FOR EVENT BUS
 	services.New(eventBus,
 		services.WithWalletService(walletService),
 		services.WithUserService(userService),
+		services.WithTransactionService(trxService),
 	)
 }

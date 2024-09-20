@@ -2,6 +2,7 @@ package vo
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/sebigdev/walletpay/internal/utils"
 
@@ -27,6 +28,9 @@ func NewPinValue(val string) (PinValue, error) {
 		return "", PinError{ErrorMsg: "Pin value must be provided"}
 	}
 	if utils.Length(val) < 4 || utils.Length(val) > 4 {
+		return "", PinError{ErrorMsg: "Pin value must have a length of 4"}
+	}
+	if strings.Contains(val, "0000") {
 		return "", PinError{ErrorMsg: "Pin value must have a length of 4"}
 	}
 	return PinValue(val), nil

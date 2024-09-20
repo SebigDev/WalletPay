@@ -21,34 +21,27 @@ func NewAuthMiddleware(ctx context.Context) *AuthMiddleware {
 	}
 }
 
-func (mw *AuthMiddleware) UserAuthMiddlewareHandler(c *fiber.Ctx) error {
+func (mw *AuthMiddleware) UserAuthMiddlewareHandler(ctx *fiber.Ctx) error {
 
-	jwtToken, err := utils.GetToken(c)
-	if err != nil {
+	jwtToken, err := utils.GetToken(ctx)
+	if err != nil || !jwtToken.Valid {
 		return fiber.NewError(fiber.StatusUnauthorized, err.Error())
 	}
 
-	if jwtToken.Valid {
-		if claims, ok := jwtToken.Claims.(jwt.MapClaims); ok {
-			expirationFloat := claims["exp"].(float64)
+	if claims, ok := jwtToken.Claims.(jwt.MapClaims); ok {
+		expirationFloat := claims["exp"].(float64)
 
-			if !ok {
-				log.Println("Expiration not found in claims")
-				return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
-			}
-
-			expiration := time.Unix(int64(expirationFloat), 0)
-
-			if time.Now().UTC().After(expiration) {
-				log.Println("Token has expired")
-				return fiber.NewError(fiber.StatusUnauthorized, "Token has expired")
-			}
-		} else {
-			log.Println("Invalid claims")
-			return fiber.NewError(fiber.StatusUnauthorized, "An error occurred")
+		if !ok {
+			log.Println("Expiration not found in claims")
+			return fiber.NewError(fiber.StatusUnauthorized, "Unauthorized")
 		}
-	} else {
-		log.Println("Token invalid")
+
+		expiration := time.Unix(int64(expirationFloat), 0)
+
+		if time.Now().UTC().After(expiration) {
+			log.Println("Token has expired")
+			return fiber.NewError(fiber.StatusUnauthorized, "Token has expired")
+		}
 	}
-	return c.Next()
+	return ctx.Next()
 }

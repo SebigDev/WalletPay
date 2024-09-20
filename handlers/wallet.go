@@ -145,7 +145,7 @@ func (w walletHandler) CreateTransaction(ctx *fiber.Ctx) error {
 		return ctx.Status(500).JSON(responses.CreateErrorResponse("Error parsing request"))
 	}
 
-	res, err := w.TransactionService.Submit(userId, *createTransactionRequest)
+	res, err := w.TransactionService.Initiate(userId, *createTransactionRequest)
 	if err != nil {
 		log.Println(err)
 		return ctx.Status(400).JSON(responses.CreateErrorResponse(err.Error()))

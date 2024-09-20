@@ -66,3 +66,7 @@ func GetUserIdFromToken(ctx *fiber.Ctx) (string, error) {
 func Length(p string) int {
 	return len(strings.TrimSpace(p))
 }
+
+func ToStringArray(value string) []string {
+	return []string{value}
+}

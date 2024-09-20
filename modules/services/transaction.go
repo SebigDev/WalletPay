@@ -9,25 +9,29 @@ import (
 )
 
 type ITransactionService interface {
-	Submit(userId string, trx dto.CreateTransaction) (responses.TransactionResponse, error)
+	Initiate(userId string, trx dto.CreateTransaction) (responses.TransactionResponse, error)
 	GetTransactions(userId string) ([]responses.TransactionFullResponse, error)
+	SubmitTransaction(transaction *entities.Transaction) (responses.TransactionResponse, error)
 }
 
 type TransactionService struct {
 	TransactionRepo repositories.ITransactionRepository
 	UserRepo        repositories.IUserRepository
+	EventBus        *EventBus
 }
 
-func NewTransactionService(repo repositories.ITransactionRepository, userRepo repositories.IUserRepository) ITransactionService {
+func NewTransactionService(repo repositories.ITransactionRepository, userRepo repositories.IUserRepository,
+	eventBus *EventBus) ITransactionService {
 	return &TransactionService{
 		TransactionRepo: repo,
 		UserRepo:        userRepo,
+		EventBus:        eventBus,
 	}
 }
 
-func (ts *TransactionService) Submit(userId string, trx dto.CreateTransaction) (responses.TransactionResponse, error) {
+func (ts *TransactionService) Initiate(userId string, trx dto.CreateTransaction) (responses.TransactionResponse, error) {
 
-	person, err := ts.UserRepo.GetUserById(userId)
+	owner, err := ts.UserRepo.GetUserById(userId)
 	if err != nil {
 		return responses.TransactionResponse{}, err
 	}
@@ -55,7 +59,7 @@ func (ts *TransactionService) Submit(userId string, trx dto.CreateTransaction) (
 	if err != nil {
 		return responses.TransactionResponse{}, err
 	}
-	if err := person.VerifyPin(trx.Pin); err != nil {
+	if err := owner.VerifyPin(trx.Pin); err != nil {
 		return responses.TransactionResponse{}, err
 	}
 
@@ -63,41 +67,50 @@ func (ts *TransactionService) Submit(userId string, trx dto.CreateTransaction) (
 	toMoney := vo.NewMoney(vo.Amount(convertedMoney), toCurr)
 	fromMoney := vo.NewMoney(amount, fromCurr)
 
+	creditor, err := ts.UserRepo.GetWalletOwner(toWallet.String())
+	if err != nil {
+		return responses.TransactionResponse{}, err
+	}
+
 	//CLEANED UP TRANSACTION OBJECTS
-	beneficiary := entities.NewBeneficiary(toWallet, *toMoney, creditorName)
-	debitor := entities.NewDebitor(person, fromWallet, *fromMoney)
+	beneficiary := entities.NewBeneficiary(creditor.GetUserID(), toWallet, *toMoney, creditorName)
+	debitor := entities.NewDebitor(owner, fromWallet, *fromMoney)
 
 	transaction := entities.NewTransaction(*debitor, *beneficiary, trx.Description)
 
 	//DEBIT WALLET
-	if err := person.Withdraw(*fromMoney, fromWallet); err != nil {
+	if err := owner.Withdraw(*fromMoney, fromWallet); err != nil {
 		return responses.TransactionResponse{}, err
 	}
+
 	//CREDIT WALLET
-	if err := person.Deposit(*toMoney, toWallet); err != nil {
+	if err := creditor.Deposit(*toMoney, toWallet); err != nil {
 		return responses.TransactionResponse{}, err
 	}
 
-	//SUBMIT PAYMENT
-	if err := ts.TransactionRepo.Submit(transaction); err != nil {
+	if err := ts.UserRepo.UpdatePerson(owner.MapToDao()); err != nil {
 		return responses.TransactionResponse{}, err
 	}
 
-	if err := ts.UserRepo.UpdatePerson(person.MapToDao()); err != nil {
+	if err := ts.UserRepo.UpdatePerson(creditor.MapToDao()); err != nil {
 		return responses.TransactionResponse{}, err
 	}
+
+	ts.EventBus.Publish(*ToEvent(*transaction, TransactionCreated))
+
 	return responses.TransactionResponse{
-		TransactionReference: transaction.PaymentRef,
-		TransactionId:        transaction.ID,
+		Status:  "Processing",
+		Message: "Transaction is being processed",
 	}, nil
+
 }
 
 func (ts *TransactionService) GetTransactions(userId string) ([]responses.TransactionFullResponse, error) {
-	person, err := ts.UserRepo.GetUserById(userId)
+	owner, err := ts.UserRepo.GetUserById(userId)
 	if err != nil {
 		return []responses.TransactionFullResponse{}, err
 	}
-	daos, err := ts.TransactionRepo.GetTransaction(person.GetUserID())
+	daos, err := ts.TransactionRepo.GetTransaction(owner.GetUserID())
 
 	if err != nil {
 		return []responses.TransactionFullResponse{}, err
@@ -106,7 +119,20 @@ func (ts *TransactionService) GetTransactions(userId string) ([]responses.Transa
 	var transactions []responses.TransactionFullResponse
 
 	for _, p := range *daos {
-		transactions = append(transactions, *entities.ToResponse(p))
+		transactions = append(transactions, *entities.ToResponse(p, userId))
 	}
 	return transactions, nil
+}
+
+func (ts *TransactionService) SubmitTransaction(transaction *entities.Transaction) (responses.TransactionResponse, error) {
+	//SUBMIT PAYMENT
+
+	if err := ts.TransactionRepo.Submit(transaction); err != nil {
+		return responses.TransactionResponse{}, err
+	}
+
+	return responses.TransactionResponse{
+		Status:  "Processed",
+		Message: "Transaction processed successfully",
+	}, nil
 }

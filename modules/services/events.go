@@ -65,7 +65,7 @@ func New(eb *EventBus, opts ...Option) {
 		option(busOpt)
 	}
 
-	handler := NewEventHandler(busOpt.WalletService, busOpt.UserService)
+	handler := NewEventHandler(busOpt.WalletService, busOpt.UserService, busOpt.TransactionService)
 	makeSub := func(topic string, buf int64) chan Event {
 		channel := make(chan Event, buf)
 		eb.Subscribe(topic, channel)
@@ -75,10 +75,12 @@ func New(eb *EventBus, opts ...Option) {
 	//HANDLERS
 	walletChannel := makeSub(WalletCreated, 1)
 	userChannel := makeSub(PinCreated, 1)
+	transactionChannel := makeSub(TransactionCreated, 1)
 
 	//GOROUTINES
 	go handler.WalletCreatedHandler(walletChannel)
 	go handler.PinCreatedHandler(userChannel)
+	go handler.NotifyTransactionHandler(transactionChannel)
 
 	time.Sleep(time.Second)
 }
@@ -97,7 +99,14 @@ func WithUserService(userService IUserService) Option {
 	}
 }
 
+func WithTransactionService(trxService ITransactionService) Option {
+	return func(bo *BusOptions) {
+		bo.TransactionService = trxService
+	}
+}
+
 type BusOptions struct {
-	WalletService IWalletService
-	UserService   IUserService
+	WalletService      IWalletService
+	UserService        IUserService
+	TransactionService ITransactionService
 }

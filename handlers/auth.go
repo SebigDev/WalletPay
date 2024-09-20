@@ -35,7 +35,6 @@ func NewAuthHandler(userService services.IUserService) IAuthHandler {
 // @Router /api/v1/auth/login [post]
 func (s authHandler) Authenticate(ctx *fiber.Ctx) error {
 	authRequest := new(dto.LoginRequest)
-
 	if err := ctx.BodyParser(authRequest); err != nil {
 		return ctx.Status(500).JSON(responses.CreateErrorResponse("Error parsing request"))
 	}
